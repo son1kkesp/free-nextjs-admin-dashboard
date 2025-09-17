@@ -8,8 +8,7 @@ interface ModalProps {
   title: string;
   subtitle?: string;
   icon?: React.ReactNode;
-  gradientFrom?: string;
-  gradientTo?: string;
+  variant?: 'primary' | 'success' | 'warning' | 'info';
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   isLoading?: boolean;
@@ -21,8 +20,7 @@ export function Modal({
   title,
   subtitle,
   icon,
-  gradientFrom = 'from-blue-500',
-  gradientTo = 'to-indigo-600',
+  variant = 'primary',
   children,
   size = 'lg',
   isLoading = false,
@@ -35,6 +33,31 @@ export function Modal({
     lg: 'sm:max-w-2xl',
     xl: 'sm:max-w-4xl',
   };
+
+  const variantClasses = {
+    primary: {
+      gradient: 'from-blue-500 to-blue-600',
+      iconBg: 'bg-blue-100 dark:bg-blue-900/30',
+      iconColor: 'text-blue-600 dark:text-blue-400',
+    },
+    success: {
+      gradient: 'from-green-500 to-green-600',
+      iconBg: 'bg-green-100 dark:bg-green-900/30',
+      iconColor: 'text-green-600 dark:text-green-400',
+    },
+    warning: {
+      gradient: 'from-amber-500 to-amber-600',
+      iconBg: 'bg-amber-100 dark:bg-amber-900/30',
+      iconColor: 'text-amber-600 dark:text-amber-400',
+    },
+    info: {
+      gradient: 'from-indigo-500 to-indigo-600',
+      iconBg: 'bg-indigo-100 dark:bg-indigo-900/30',
+      iconColor: 'text-indigo-600 dark:text-indigo-400',
+    },
+  };
+
+  const currentVariant = variantClasses[variant];
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -52,13 +75,13 @@ export function Modal({
 
         {/* Modal */}
         <div className={`inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle ${sizeClasses[size]} sm:w-full border-0 ring-1 ring-gray-300 dark:ring-gray-600 relative z-10`}>
-          {/* Header con gradiente */}
-          <div className={`bg-gradient-to-r ${gradientFrom} ${gradientTo} px-6 py-5 relative`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-white/25 rounded-xl backdrop-blur-sm">
-                  {icon}
-                </div>
+        {/* Header con gradiente */}
+        <div className={`bg-gradient-to-r ${currentVariant.gradient} px-6 py-5 relative`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className={`p-2 ${currentVariant.iconBg} rounded-xl backdrop-blur-sm`}>
+                {icon}
+              </div>
                 <div>
                   <h3 className="text-xl font-bold text-white">
                     {title}
@@ -106,38 +129,38 @@ interface UserInfoProps {
 
 export function UserInfo({ user, server }: UserInfoProps) {
   return (
-    <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+    <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
       <div className="flex items-center space-x-3 mb-3">
-        <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
-          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="p-2 bg-gray-100 dark:bg-gray-600 rounded-lg">
+          <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </div>
-        <h4 className="font-semibold text-blue-900 dark:text-blue-100">Información del usuario</h4>
+        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Información del usuario</h4>
       </div>
       <div className="space-y-2">
         {user.embyUserEmail && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">📧</span>
-            <span className="text-blue-900 dark:text-blue-100 font-medium">{user.embyUserEmail}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">📧</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">{user.embyUserEmail}</span>
           </div>
         )}
         {user.embyUserName && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">👤</span>
-            <span className="text-blue-900 dark:text-blue-100 font-medium">{user.embyUserName}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">👤</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">{user.embyUserName}</span>
           </div>
         )}
         {server && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">🖥️</span>
-            <span className="text-blue-900 dark:text-blue-100 font-medium">Servidor: {server.name}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">🖥️</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">Servidor: {server.name}</span>
           </div>
         )}
         {!user.embyUserEmail && !user.embyUserName && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">🆔</span>
-            <span className="text-blue-900 dark:text-blue-100 font-medium">ID: {user.id}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">🆔</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">ID: {user.id}</span>
           </div>
         )}
       </div>

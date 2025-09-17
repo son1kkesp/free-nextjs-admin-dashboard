@@ -93,8 +93,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
       title="Renovar Usuario"
       subtitle="Amplía el tiempo de acceso"
       icon={renewIcon}
-      gradientFrom="from-green-500"
-      gradientTo="to-emerald-600"
+      variant="success"
       isLoading={isLoading}
       size="md"
     >

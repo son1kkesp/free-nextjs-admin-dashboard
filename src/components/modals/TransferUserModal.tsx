@@ -85,8 +85,7 @@ export function TransferUserModal({ isOpen, onClose, user, servers, onSuccess }:
       title="Transferir Usuario"
       subtitle="Mueve el usuario a otro servidor"
       icon={transferIcon}
-      gradientFrom="from-purple-500"
-      gradientTo="to-indigo-600"
+      variant="info"
       isLoading={isLoading}
       size="md"
     >

@@ -83,27 +83,26 @@ export function ConvertDemoModal({ isOpen, onClose, demo, onSuccess }: ConvertDe
       title="Convertir Demo a Usuario"
       subtitle="Transforma la demo en una cuenta permanente"
       icon={convertIcon}
-      gradientFrom="from-orange-500"
-      gradientTo="to-red-600"
+      variant="warning"
       isLoading={isLoading}
       size="md"
     >
       {demo && (
         <>
           {/* Información de la demo */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
+          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
-                <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-gray-100 dark:bg-gray-600 rounded-lg">
+                <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-orange-900 dark:text-orange-100">Demo a convertir</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">Demo a convertir</h4>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-orange-700 dark:text-orange-300">📧</span>
-              <span className="text-orange-900 dark:text-orange-100 font-medium">{demo.embyUser.email}</span>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">📧</span>
+              <span className="text-gray-900 dark:text-gray-100 font-medium">{demo.embyUser.email}</span>
             </div>
           </div>
 
