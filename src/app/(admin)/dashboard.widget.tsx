@@ -1,5 +1,8 @@
 "use client";
 import { useState } from "react";
+import DemoCleanupWidget from "@/components/jobs/DemoCleanupWidget";
+import UserSyncWidget from "@/components/jobs/UserSyncWidget";
+import QueueManagerWidget from "@/components/jobs/QueueManagerWidget";
 
 interface DashboardWidgetProps {
   serversCount: number;
@@ -179,6 +182,11 @@ export default function DashboardWidget({
           <p className="text-gray-500 dark:text-gray-400 text-center py-8">Actividad reciente no implementada aún</p>
         </div>
       )}
+
+      {/* Jobs de Mantenimiento */}
+      <DemoCleanupWidget />
+      <UserSyncWidget />
+      <QueueManagerWidget />
     </div>
   );
 }
