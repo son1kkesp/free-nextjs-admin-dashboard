@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import ServerUsersWidget from "./server-users.widget";
 
 export default async function ServerUsersPage() {
-  // Obtener usuarios con sus datos de Emby
-  const userServerLinks = await prisma.userServerLink.findMany({
+  // Obtener usuarios con sus datos de Emby de manera más eficiente
+  const serverUsers = await prisma.userServerLink.findMany({
     where: {
       isDemo: false, // Solo usuarios reales, no demos
     },
@@ -21,23 +21,34 @@ export default async function ServerUsersPage() {
     },
   });
 
-  // Obtener los datos de EmbyAccount para cada UserServerLink
-  const serverUsers = await Promise.all(
-    userServerLinks.map(async (link) => {
-      const embyAccount = await prisma.embyAccount.findFirst({
-        where: {
-          userId: link.userId,
-          serverId: link.serverId,
-        },
-      });
+  // Obtener los datos de EmbyAccount para cada UserServerLink de manera más eficiente
+  const userIds = [...new Set(serverUsers.map(link => link.userId))];
+  const embyAccounts = await prisma.embyAccount.findMany({
+    where: {
+      userId: {
+        in: userIds,
+      },
+    },
+  });
 
-      return {
-        ...link,
-        embyUserEmail: embyAccount?.embyUserEmail || '',
-        embyUserName: embyAccount?.embyUserName || '',
-      };
-    })
-  );
+  // Crear un mapa para acceso rápido
+  const embyAccountMap = new Map();
+  embyAccounts.forEach(account => {
+    const key = `${account.userId}-${account.serverId}`;
+    embyAccountMap.set(key, account);
+  });
+
+  // Combinar los datos
+  const serverUsersWithEmby = serverUsers.map(link => {
+    const key = `${link.userId}-${link.serverId}`;
+    const embyAccount = embyAccountMap.get(key);
+    
+    return {
+      ...link,
+      embyUserEmail: embyAccount?.embyUserEmail || '',
+      embyUserName: embyAccount?.embyUserName || '',
+    };
+  });
   
   const servers = await prisma.embyServer.findMany({
     select: {
@@ -63,7 +74,7 @@ export default async function ServerUsersPage() {
 
   return (
     <ServerUsersWidget 
-      serverUsers={serverUsers} 
+      serverUsers={serverUsersWithEmby} 
       servers={servers}
       packages={packages}
     />
