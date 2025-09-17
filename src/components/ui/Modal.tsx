@@ -45,13 +45,13 @@ export function Modal({
           aria-hidden="true" 
           onClick={!isLoading ? onClose : undefined}
         >
-          <div className="absolute inset-0 bg-black opacity-60"></div>
+          <div className="absolute inset-0 bg-black opacity-30"></div>
         </div>
 
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         {/* Modal */}
-        <div className={`inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle ${sizeClasses[size]} sm:w-full border-0 ring-1 ring-gray-200 dark:ring-gray-700`}>
+        <div className={`inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle ${sizeClasses[size]} sm:w-full border-0 ring-1 ring-gray-300 dark:ring-gray-600 relative z-10`}>
           {/* Header con gradiente */}
           <div className={`bg-gradient-to-r ${gradientFrom} ${gradientTo} px-6 py-5 relative`}>
             <div className="flex items-center justify-between">
