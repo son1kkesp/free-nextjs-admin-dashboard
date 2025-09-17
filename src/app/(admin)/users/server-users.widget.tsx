@@ -313,7 +313,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     },
   ];
 
-  // Campos específicos para editar usuario (solo fecha de expiración, tipo de créditos y contraseña)
+  // Campos específicos para editar usuario con información actual vs cambios
   const editUserFields = [
     {
       id: "expirationDate",
@@ -323,6 +323,8 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       value: formData.expirationDate || "",
       onChange: (value: string) => setFormData({ ...formData, expirationDate: value }),
       description: "Fecha hasta la cual el usuario tendrá acceso",
+      showCurrentValue: true,
+      currentValue: selectedUser?.expirationDate ? new Date(selectedUser.expirationDate).toLocaleDateString('es-ES') : 'Sin fecha',
     },
     {
       id: "creditType",
@@ -336,16 +338,20 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
         { value: "TWO_CONNECTIONS", label: "2 Conexiones Simultáneas (Premium)" },
       ],
       description: "Número de dispositivos que pueden conectarse simultáneamente",
+      showCurrentValue: true,
+      currentValue: selectedUser?.creditType === 'ONE_CONNECTION' ? '1 Conexión (Básico)' : '2 Conexiones (Premium)',
     },
     {
       id: "password",
-      label: "Nueva Contraseña (Opcional)",
+      label: "Nueva Contraseña",
       type: "password" as const,
       placeholder: "••••••••",
       required: false,
       value: formData.password,
       onChange: (value: string) => setFormData({ ...formData, password: value }),
       description: "Deja vacío para mantener la contraseña actual",
+      showCurrentValue: true,
+      currentValue: "•••••••• (actual)",
       generateButton: {
         onClick: () => {
           const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -19,6 +19,8 @@ interface FormField {
   rows?: number;
   icon?: React.ReactNode;
   description?: string;
+  showCurrentValue?: boolean;
+  currentValue?: string;
   generateButton?: {
     onClick: () => void;
     label?: string;
@@ -86,6 +88,16 @@ export default function FormModal({
                   {field.label}
                   {field.required && <span className="ml-1 text-red-500">*</span>}
                 </Label>
+                
+                {/* Mostrar valor actual si está habilitado */}
+                {field.showCurrentValue && field.currentValue && (
+                  <div className="mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Valor actual:</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{field.currentValue}</span>
+                    </div>
+                  </div>
+                )}
                 
                 {field.description && (
                   <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
