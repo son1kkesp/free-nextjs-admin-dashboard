@@ -3,9 +3,23 @@ import { useState, useEffect, useRef } from 'react';
 interface ServerStats {
   id: string;
   name: string;
+  url: string;
   maxUsers: number;
   currentUsers: number;
-  availableSlots: number;
+  currentDemos: number;
+  usagePercentage: number;
+  isActive: boolean;
+  createdAt: Date;
+}
+
+interface OverallStats {
+  totalServers: number;
+  activeServers: number;
+  totalMaxUsers: number;
+  totalCurrentUsers: number;
+  totalCurrentDemos: number;
+  overallUsagePercentage: number;
+  averageUsagePerServer: number;
 }
 
 // Cache global para evitar llamadas duplicadas
@@ -45,7 +59,10 @@ export function useServerStats(forceRefresh: boolean = false) {
           throw new Error('Error al obtener estadísticas de servidores');
         }
         
-        const stats = await response.json();
+        const data = await response.json();
+        
+        // Extraer el array de servidores de la respuesta
+        const stats = data.servers || [];
         
         // Actualizar cache global
         globalCache = {

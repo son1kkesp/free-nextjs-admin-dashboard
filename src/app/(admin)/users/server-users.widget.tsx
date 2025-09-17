@@ -219,7 +219,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
         packageId: "" // Limpiar paquete cuando se cambia servidor
       }),
       options: servers.map((server) => {
-        const stats = serverStats.find(s => s.id === server.id);
+        const stats = Array.isArray(serverStats) ? serverStats.find(s => s.id === server.id) : null;
         const currentUsers = stats?.currentUsers || 0;
         const maxUsers = server.maxUsers || 100;
         return {
@@ -231,7 +231,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       generateButton: {
         onClick: () => {
           const serversWithStats = servers.map(server => {
-            const stats = serverStats.find(s => s.id === server.id);
+            const stats = Array.isArray(serverStats) ? serverStats.find(s => s.id === server.id) : null;
             const currentUsers = stats?.currentUsers || 0;
             const maxUsers = server.maxUsers || 100;
             const fillPercentage = (currentUsers / maxUsers) * 100;
