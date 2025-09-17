@@ -222,6 +222,54 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
     setTimeout(() => textArea.select(), 100);
   };
 
+  // Función para determinar el estado del usuario
+  const getUserStatus = (user: User): { status: string; color: string; bgColor: string } => {
+    if (!user.expirationDate) {
+      return { 
+        status: 'SIN_FECHA', 
+        color: 'text-gray-600 dark:text-gray-400', 
+        bgColor: 'bg-gray-50 dark:bg-gray-800' 
+      };
+    }
+    
+    const expireDate = new Date(user.expirationDate);
+    const now = new Date();
+    const diffTime = expireDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays <= 0) {
+      return { 
+        status: 'EXPIRADO', 
+        color: 'text-red-600 dark:text-red-400', 
+        bgColor: 'bg-red-50/30 dark:bg-red-900/10' 
+      };
+    } else if (diffDays <= 5) {
+      return { 
+        status: 'CASI_EXPIRADO', 
+        color: 'text-yellow-600 dark:text-yellow-400', 
+        bgColor: 'bg-yellow-50/30 dark:bg-yellow-900/10' 
+      };
+    } else {
+      return { 
+        status: 'ACTIVO', 
+        color: 'text-green-600 dark:text-green-400', 
+        bgColor: 'bg-green-50/30 dark:bg-green-900/10' 
+      };
+    }
+  };
+
+  // Función para obtener el texto del estado
+  const getStatusText = (status: string): string => {
+    switch (status) {
+      case 'ACTIVO': return 'Activo';
+      case 'CASI_EXPIRADO': return 'Casi expirado';
+      case 'EXPIRADO': return 'Expirado';
+      case 'INACTIVO': return 'Inactivo';
+      case 'SIN_FECHA': return 'Sin fecha';
+      default: return 'Desconocido';
+    }
+  };
+
   // Filtrar y ordenar usuarios
   const filteredAndSortedUsers = useMemo(() => {
     let filtered = users.filter(user => {
@@ -302,54 +350,6 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
   const handleTransferSuccess = () => {
     window.location.reload();
-  };
-
-  // Función para determinar el estado del usuario
-  const getUserStatus = (user: User): { status: string; color: string; bgColor: string } => {
-    if (!user.expirationDate) {
-      return { 
-        status: 'SIN_FECHA', 
-        color: 'text-gray-600 dark:text-gray-400', 
-        bgColor: 'bg-gray-50 dark:bg-gray-800' 
-      };
-    }
-    
-    const expireDate = new Date(user.expirationDate);
-    const now = new Date();
-    const diffTime = expireDate.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays <= 0) {
-      return { 
-        status: 'EXPIRADO', 
-        color: 'text-red-600 dark:text-red-400', 
-        bgColor: 'bg-red-50/30 dark:bg-red-900/10' 
-      };
-    } else if (diffDays <= 5) {
-      return { 
-        status: 'CASI_EXPIRADO', 
-        color: 'text-yellow-600 dark:text-yellow-400', 
-        bgColor: 'bg-yellow-50/30 dark:bg-yellow-900/10' 
-      };
-    } else {
-      return { 
-        status: 'ACTIVO', 
-        color: 'text-green-600 dark:text-green-400', 
-        bgColor: 'bg-green-50/30 dark:bg-green-900/10' 
-      };
-    }
-  };
-
-  // Función para obtener el texto del estado
-  const getStatusText = (status: string): string => {
-    switch (status) {
-      case 'ACTIVO': return 'Activo';
-      case 'CASI_EXPIRADO': return 'Casi expirado';
-      case 'EXPIRADO': return 'Expirado';
-      case 'INACTIVO': return 'Inactivo';
-      case 'SIN_FECHA': return 'Sin fecha';
-      default: return 'Desconocido';
-    }
   };
 
   // Función para obtener el icono de ordenamiento
