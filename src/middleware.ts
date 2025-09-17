@@ -1,5 +1,6 @@
 import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
+import { withPermissions } from "@/lib/middleware/permissions"
 
 export default withAuth(
   function middleware(req) {
@@ -27,14 +28,10 @@ export default withAuth(
       )
     }
 
-    // Verificar permisos para rutas admin
-    if (req.nextUrl.pathname.startsWith("/admin")) {
-      const userRole = token?.role as string
-      const adminRoles = ["SUPER_ADMIN", "TECH_ADMIN"]
-      
-      if (!adminRoles.includes(userRole)) {
-        return NextResponse.redirect(new URL("/", req.url))
-      }
+    // Verificar permisos granulares para todas las rutas
+    const permissionCheck = withPermissions(req, token)
+    if (permissionCheck) {
+      return permissionCheck
     }
 
     return null

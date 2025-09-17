@@ -3,6 +3,8 @@ import { useState } from "react";
 import DemoCleanupWidget from "@/components/jobs/DemoCleanupWidget";
 import UserSyncWidget from "@/components/jobs/UserSyncWidget";
 import QueueManagerWidget from "@/components/jobs/QueueManagerWidget";
+import PermissionInfo from "@/components/auth/PermissionInfo";
+import PermissionGuard from "@/components/auth/PermissionGuard";
 
 interface DashboardWidgetProps {
   serversCount: number;
@@ -184,9 +186,20 @@ export default function DashboardWidget({
       )}
 
       {/* Jobs de Mantenimiento */}
-      <DemoCleanupWidget />
-      <UserSyncWidget />
-      <QueueManagerWidget />
+      <PermissionGuard permission="jobs:read">
+        <DemoCleanupWidget />
+      </PermissionGuard>
+      
+      <PermissionGuard permission="jobs:execute">
+        <UserSyncWidget />
+      </PermissionGuard>
+      
+      <PermissionGuard permission="jobs:execute">
+        <QueueManagerWidget />
+      </PermissionGuard>
+      
+      {/* Información de Permisos */}
+      <PermissionInfo showDetails={true} />
     </div>
   );
 }
