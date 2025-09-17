@@ -39,24 +39,24 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
-        {/* Overlay con backdrop blur */}
+        {/* Overlay limpio sin blur */}
         <div 
           className="fixed inset-0 transition-opacity" 
           aria-hidden="true" 
           onClick={!isLoading ? onClose : undefined}
         >
-          <div className="absolute inset-0 bg-gray-900 opacity-50 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 bg-black opacity-60"></div>
         </div>
 
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         {/* Modal */}
-        <div className={`inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle ${sizeClasses[size]} sm:w-full border border-gray-200 dark:border-gray-700`}>
+        <div className={`inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle ${sizeClasses[size]} sm:w-full border-0 ring-1 ring-gray-200 dark:ring-gray-700`}>
           {/* Header con gradiente */}
-          <div className={`bg-gradient-to-r ${gradientFrom} ${gradientTo} px-6 py-5`}>
+          <div className={`bg-gradient-to-r ${gradientFrom} ${gradientTo} px-6 py-5 relative`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-white/20 rounded-xl">
+                <div className="p-2 bg-white/25 rounded-xl backdrop-blur-sm">
                   {icon}
                 </div>
                 <div>
@@ -73,7 +73,7 @@ export function Modal({
               <button
                 onClick={onClose}
                 disabled={isLoading}
-                className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-white/90 hover:text-white hover:bg-white/25 p-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
