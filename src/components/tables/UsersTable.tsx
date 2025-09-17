@@ -734,31 +734,31 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                     onClick={() => handleSort('email')}
                   >
                     Email {getSortIcon('email')}
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                     onClick={() => handleSort('server')}
                   >
                     Servidor {getSortIcon('server')}
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                     onClick={() => handleSort('expireAt')}
                   >
                     Expira {getSortIcon('expireAt')}
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                     onClick={() => handleSort('status')}
                   >
                     Estado {getSortIcon('status')}
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                     onClick={() => handleSort('credits')}
                   >
                     Conexiones {getSortIcon('credits')}
@@ -773,28 +773,28 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
                   const userStatus = getUserStatus(user);
                   return (
                     <tr key={user.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${userStatus.bgColor}`}>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {user.embyUserEmail || 'Sin email'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                       {user.server?.name || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                       {formatExpirationDate(user.expirationDate || null)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${userStatus.color} ${userStatus.bgColor}`}>
                         {getStatusText(userStatus.status)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-white">
                         {user.creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
                         {/* Botones principales */}
                         <button

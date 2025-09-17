@@ -18,7 +18,7 @@ export default function AdminLayout({
   const mainContentMargin = isMobileOpen
     ? "ml-0"
     : isExpanded || isHovered
-    ? "lg:ml-[290px]"
+    ? "lg:ml-[260px]"
     : "lg:ml-[90px]";
 
   return (
@@ -34,7 +34,7 @@ export default function AdminLayout({
           {/* Header */}
           <AppHeader />
           {/* Page Content */}
-          <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 overflow-x-hidden">{children}</div>
+          <div className="p-3 md:p-4 overflow-x-hidden w-full">{children}</div>
         </div>
       </div>
     </ToastProvider>
