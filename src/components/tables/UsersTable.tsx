@@ -272,7 +272,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
   // Filtrar y ordenar usuarios
   const filteredAndSortedUsers = useMemo(() => {
-    let filtered = users.filter(user => {
+    const filtered = users.filter(user => {
       const matchesSearch = (user.embyUserEmail || '').toLowerCase().includes(searchTerm.toLowerCase());
       const serverName = user.server?.name || '';
       const matchesServer = serverFilter === 'all' || serverName === serverFilter;

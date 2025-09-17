@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const createdBy = searchParams.get('createdBy');
     const orderBy = searchParams.get('orderBy') || 'expirationDate';
 
-    let whereClause: any = {
+    const whereClause: Record<string, unknown> = {
       isDemo: false
     };
 
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    let orderByClause: any = {};
+    let orderByClause: Record<string, string> = {};
     switch (orderBy) {
       case 'expirationDate':
         orderByClause = { expirationDate: 'asc' };

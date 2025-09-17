@@ -29,7 +29,7 @@ interface EmbyUser {
     IsDisabled: boolean;
     BlockedTags: string[];
     EnableUserPreferenceAccess: boolean;
-    AccessSchedules: any[];
+    AccessSchedules: unknown[];
     BlockUnratedItems: string[];
     EnableRemoteControlOfOtherUsers: boolean;
     EnableSharedDeviceControl: boolean;
@@ -125,9 +125,9 @@ interface EmbyLibrary {
   IsFolder: boolean;
   Type: string;
   CollectionFolders: string[];
-  ImageTags: any;
-  BackdropImageTags: any;
-  ScreenshotImageTags: any;
+  ImageTags: Record<string, unknown>;
+  BackdropImageTags: Record<string, unknown>;
+  ScreenshotImageTags: Record<string, unknown>;
   ParentId?: string;
   LocationType: string;
   LockedFields: string[];
@@ -196,7 +196,7 @@ export class EmbyService {
     this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
   }
 
-  private async makeRequest<T>(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', body?: any): Promise<T> {
+  private async makeRequest<T>(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', body?: unknown): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     
     const headers: HeadersInit = {
@@ -295,7 +295,7 @@ export class EmbyService {
     StartIndex?: number;
     Limit?: number;
   }): Promise<{
-    Items: any[];
+    Items: EmbyUser[];
     TotalRecordCount: number;
   }> {
     const params = new URLSearchParams();

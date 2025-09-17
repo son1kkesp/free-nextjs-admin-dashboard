@@ -12,15 +12,15 @@ interface ServerStats {
   createdAt: Date;
 }
 
-interface OverallStats {
-  totalServers: number;
-  activeServers: number;
-  totalMaxUsers: number;
-  totalCurrentUsers: number;
-  totalCurrentDemos: number;
-  overallUsagePercentage: number;
-  averageUsagePerServer: number;
-}
+// interface OverallStats {
+//   totalServers: number;
+//   activeServers: number;
+//   totalMaxUsers: number;
+//   totalCurrentUsers: number;
+//   totalCurrentDemos: number;
+//   overallUsagePercentage: number;
+//   averageUsagePerServer: number;
+// }
 
 // Cache global para evitar llamadas duplicadas
 let globalCache: { data: ServerStats[]; timestamp: number } | null = null;

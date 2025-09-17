@@ -12,7 +12,6 @@ import {
   PencilIcon, 
   TrashBinIcon, 
   CheckCircleIcon,
-  AlertIcon,
   FolderIcon
 } from "@/icons/index";
 

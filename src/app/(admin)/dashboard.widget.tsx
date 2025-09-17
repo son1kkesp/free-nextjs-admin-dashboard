@@ -1,13 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
-
-type Activity = {
-  id: string;
-  delta: number;
-  reason: string | null;
-  createdAt: Date;
-  actor: { email: string };
-};
+import { useState } from "react";
 
 interface DashboardWidgetProps {
   serversCount: number;
@@ -21,7 +13,7 @@ export default function DashboardWidget({
   demosCount 
 }: DashboardWidgetProps) {
   const [activeTab, setActiveTab] = useState("overview");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   // No necesitamos fetch interno ya que recibimos los datos como props
 

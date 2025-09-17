@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   eslint: {
-    // Deshabilitar ESLint durante el build para poder probar la aplicación
+    // Deshabilitar ESLint durante el build para permitir compilación
     ignoreDuringBuilds: true,
   },
   trailingSlash: true,
