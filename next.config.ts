@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     // Deshabilitar ESLint durante el build para poder probar la aplicación
     ignoreDuringBuilds: true,
   },
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
