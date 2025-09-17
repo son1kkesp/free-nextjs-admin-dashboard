@@ -5,8 +5,8 @@ import Button from "@/components/ui/button/Button"
 import { 
   ArrowRightIcon, 
   CloseIcon, 
-  RefreshIcon, 
-  TrashIcon, 
+  ArrowRightIcon as RefreshIcon, 
+  TrashBinIcon, 
   PlusIcon,
   PlugInIcon,
   UserIcon,
@@ -154,7 +154,7 @@ export default function QueueManagerWidget() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrashIcon className="h-4 w-4 text-blue-600" />
+                <TrashBinIcon className="h-4 w-4 text-blue-600" />
                 <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
                   Limpieza de Demos
                 </span>
@@ -249,7 +249,7 @@ export default function QueueManagerWidget() {
             <Button
               onClick={() => executeAction('clean-completed')}
               variant="outline"
-              startIcon={<TrashIcon />}
+              startIcon={<TrashBinIcon />}
               disabled={isProcessing}
               className="text-sm"
             >
@@ -286,7 +286,7 @@ export default function QueueManagerWidget() {
               <Button
                 onClick={() => executeAction('add-demo-cleanup')}
                 variant="outline"
-                startIcon={<TrashIcon />}
+                startIcon={<TrashBinIcon />}
                 disabled={isProcessing}
                 className="text-sm"
               >

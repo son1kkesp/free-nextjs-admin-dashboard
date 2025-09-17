@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Button from "@/components/ui/button/Button"
-import { TrashIcon, RefreshIcon, TimeIcon as ClockIcon } from "@/icons/index"
+import { TrashBinIcon, ArrowRightIcon, TimeIcon as ClockIcon } from "@/icons/index"
 
 interface DemoStats {
   active: number
@@ -100,7 +100,7 @@ export default function DemoCleanupWidget() {
         <Button
           onClick={fetchStats}
           variant="outline"
-          startIcon={<RefreshIcon />}
+          startIcon={<ArrowRightIcon />}
           disabled={isLoading}
         >
           {isLoading ? "Cargando..." : "Actualizar"}
@@ -162,7 +162,7 @@ export default function DemoCleanupWidget() {
           <Button
             onClick={runCleanup}
             variant="outline"
-            startIcon={<TrashIcon />}
+            startIcon={<TrashBinIcon />}
             disabled={isCleaning}
             className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
           >

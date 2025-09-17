@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Button from "@/components/ui/button/Button"
-import { RefreshIcon, PlugInIcon, UserIcon, PlugInIcon as ServerIcon } from "@/icons/index"
+import { ArrowRightIcon, PlugInIcon, UserIcon, PlugInIcon as ServerIcon } from "@/icons/index"
 
 interface SyncStats {
   active: number
@@ -115,7 +115,7 @@ export default function UserSyncWidget() {
         <Button
           onClick={fetchStats}
           variant="outline"
-          startIcon={<RefreshIcon />}
+          startIcon={<ArrowRightIcon />}
           disabled={isLoading}
         >
           {isLoading ? "Cargando..." : "Actualizar"}
