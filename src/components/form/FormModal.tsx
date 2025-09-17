@@ -106,7 +106,7 @@ export default function FormModal({
                                 const element = document.getElementById(`current-${field.id}`);
                                 if (element) {
                                   const isHidden = element.textContent === '••••••••';
-                                  element.textContent = isHidden ? 'Contraseña actual' : '••••••••';
+                                  element.textContent = isHidden ? field.currentValue || 'Sin contraseña' : '••••••••';
                                 }
                               }}
                               className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"

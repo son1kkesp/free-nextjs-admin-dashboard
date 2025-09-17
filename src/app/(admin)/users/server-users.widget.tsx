@@ -74,6 +74,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     creditsAllocated: "1", // Por defecto 1 crédito
     creditType: "ONE_CONNECTION",
     expirationDate: "", // Fecha de expiración para edición
+    currentPassword: "", // Contraseña actual para mostrar
   });
 
   const handleCreateUser = () => {
@@ -86,11 +87,12 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       creditsAllocated: "1", // Por defecto 1 crédito
       creditType: "ONE_CONNECTION",
       expirationDate: "",
+      currentPassword: "",
     });
     openModal();
   };
 
-  const handleEditUser = (user: ServerUser) => {
+  const handleEditUser = async (user: ServerUser) => {
     setSelectedUser(user);
     
     // Formatear la fecha de expiración para el input date
@@ -98,6 +100,18 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     if (user.expirationDate) {
       const date = new Date(user.expirationDate);
       expirationDateFormatted = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    }
+    
+    // Obtener la contraseña actual del usuario
+    let currentPassword = "";
+    try {
+      const response = await fetch(`/api/server-users/${user.id}/password`);
+      if (response.ok) {
+        const data = await response.json();
+        currentPassword = data.password || "";
+      }
+    } catch (error) {
+      console.error("Error obteniendo contraseña:", error);
     }
     
     setFormData({
@@ -108,6 +122,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       creditsAllocated: user.credits.toString(),
       creditType: user.creditType,
       expirationDate: expirationDateFormatted,
+      currentPassword: currentPassword,
     });
     openModal();
   };
@@ -351,7 +366,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       onChange: (value: string) => setFormData({ ...formData, password: value }),
       description: "Deja vacío para mantener la contraseña actual",
       showCurrentValue: true,
-      currentValue: "••••••••",
+      currentValue: formData.currentPassword || "••••••••",
       generateButton: {
         onClick: () => {
           const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
