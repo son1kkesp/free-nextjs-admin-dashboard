@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useToastContext } from '@/components/providers/ToastProvider';
+import { Modal, ModalActions } from '@/components/ui/Modal';
 
 interface ConvertDemoModalProps {
   isOpen: boolean;
@@ -21,15 +22,11 @@ export function ConvertDemoModal({ isOpen, onClose, demo, onSuccess }: ConvertDe
   const [isLoading, setIsLoading] = useState(false);
   const { success, error } = useToastContext();
 
-  if (!isOpen || !demo || !demo.embyUser || !demo.embyUser.email) {
-    return null;
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (!demo) return;
     
     if (credits <= 0) {
-      error('Los créditos deben ser un número positivo');
+      error("Error", 'Los créditos deben ser un número positivo');
       return;
     }
 
@@ -48,18 +45,18 @@ export function ConvertDemoModal({ isOpen, onClose, demo, onSuccess }: ConvertDe
       });
 
       if (response.ok) {
-        success(`Demo convertida exitosamente. ${credits} crédito${credits > 1 ? 's' : ''} asignado${credits > 1 ? 's' : ''} (${creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'})`);
+        success("Éxito", `Demo convertida exitosamente. ${credits} crédito${credits > 1 ? 's' : ''} asignado${credits > 1 ? 's' : ''} (${creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'})`);
         onSuccess();
         onClose();
         setCredits(1);
         setCreditType('ONE_CONNECTION');
       } else {
         const errorData = await response.json();
-        error(`Error: ${errorData.message}`);
+        error("Error", `Error: ${errorData.message}`);
       }
     } catch (err) {
       console.error('Error converting demo:', err);
-      error('Error al convertir la demo');
+      error("Error", 'Error al convertir la demo');
     } finally {
       setIsLoading(false);
     }
@@ -73,108 +70,155 @@ export function ConvertDemoModal({ isOpen, onClose, demo, onSuccess }: ConvertDe
     }
   };
 
+  const convertIcon = (
+    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Convertir Demo a Usuario
-            </h3>
-            <button
-              onClick={handleClose}
-              disabled={isLoading}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+    <Modal
+      isOpen={isOpen && !!demo}
+      onClose={handleClose}
+      title="Convertir Demo a Usuario"
+      subtitle="Transforma la demo en una cuenta permanente"
+      icon={convertIcon}
+      gradientFrom="from-orange-500"
+      gradientTo="to-red-600"
+      isLoading={isLoading}
+      size="lg"
+    >
+      {demo && (
+        <>
+          {/* Información de la demo */}
+          <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </div>
+              <h4 className="font-semibold text-orange-900 dark:text-orange-100">Demo a convertir</h4>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-orange-700 dark:text-orange-300">📧</span>
+              <span className="text-orange-900 dark:text-orange-100 font-medium">{demo.embyUser.email}</span>
+            </div>
           </div>
 
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Convirtiendo demo de:
-            </p>
-            <p className="font-medium text-gray-900 dark:text-white">
-              {demo.embyUser.email}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-6">
+            {/* Créditos */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Créditos a Asignar
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                <span className="flex items-center space-x-2">
+                  <span>💎</span>
+                  <span>Créditos a asignar</span>
+                </span>
               </label>
-              <input
-                type="number"
-                min="1"
-                max="12"
-                value={credits}
-                onChange={(e) => setCredits(parseInt(e.target.value) || 1)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                placeholder="Número de créditos (1 crédito = 1 mes)"
-                required
-                disabled={isLoading}
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={credits}
+                  onChange={(e) => setCredits(parseInt(e.target.value) || 1)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-700 dark:text-white transition-all duration-200 text-lg font-medium"
+                  placeholder="Ingresa la cantidad de créditos"
+                  required
+                  disabled={isLoading}
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    {credits === 1 ? 'mes' : 'meses'}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 1 crédito = 1 mes de acceso
               </p>
             </div>
 
+            {/* Tipo de conexión */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Tipo de Conexión
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                <span className="flex items-center space-x-2">
+                  <span>🔗</span>
+                  <span>Tipo de Conexión</span>
+                </span>
               </label>
-              <select
-                value={creditType}
-                onChange={(e) => setCreditType(e.target.value as 'ONE_CONNECTION' | 'TWO_CONNECTIONS')}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                disabled={isLoading}
-              >
-                <option value="ONE_CONNECTION">1 Conexión Simultánea</option>
-                <option value="TWO_CONNECTIONS">2 Conexiones Simultáneas</option>
-              </select>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Número de dispositivos que pueden conectarse al mismo tiempo
-              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCreditType('ONE_CONNECTION')}
+                  disabled={isLoading}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                    creditType === 'ONE_CONNECTION'
+                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300'
+                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-2">🔌</div>
+                    <div className="font-semibold">1 Conexión</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Acceso estándar</div>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCreditType('TWO_CONNECTIONS')}
+                  disabled={isLoading}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                    creditType === 'TWO_CONNECTIONS'
+                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300'
+                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-2">🔗</div>
+                    <div className="font-semibold">2 Conexiones</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Acceso premium</div>
+                  </div>
+                </button>
+              </div>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-3">
-              <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
-                Resumen de Conversión
-              </h4>
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                • {credits} crédito{credits > 1 ? 's' : ''} = {credits} mes{credits > 1 ? 'es' : ''} de acceso
-              </p>
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                • {creditType === 'ONE_CONNECTION' ? '1' : '2'} conexión{creditType === 'TWO_CONNECTIONS' ? 'es' : ''} simultánea{creditType === 'TWO_CONNECTIONS' ? 's' : ''}
-              </p>
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                • Expira: {new Date(Date.now() + credits * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
-              </p>
+            {/* Resumen */}
+            <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
+              <div className="flex items-center space-x-2 mb-3">
+                <span className="text-orange-600 dark:text-orange-400">📋</span>
+                <h4 className="font-semibold text-orange-900 dark:text-orange-100">Resumen de conversión</h4>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-orange-700 dark:text-orange-300">Demo:</span>
+                  <span className="font-medium text-orange-900 dark:text-orange-100">{demo.embyUser.email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-orange-700 dark:text-orange-300">Créditos:</span>
+                  <span className="font-medium text-orange-900 dark:text-orange-100">{credits} mes{credits > 1 ? 'es' : ''}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-orange-700 dark:text-orange-300">Conexiones:</span>
+                  <span className="font-semibold text-orange-900 dark:text-orange-100">
+                    {creditType === 'ONE_CONNECTION' ? '1 Conexión' : '2 Conexiones'}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={handleClose}
-                disabled={isLoading}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-              >
-                {isLoading ? 'Convirtiendo...' : 'Convertir Demo'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+            {/* Botones */}
+            <ModalActions
+              onCancel={handleClose}
+              onSubmit={handleSubmit}
+              submitText="Convertir Demo"
+              submitIcon="⚡"
+              isLoading={isLoading}
+              submitVariant="warning"
+            />
+          </div>
+        </>
+      )}
+    </Modal>
   );
 }
