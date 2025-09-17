@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Button from "@/components/ui/button/Button";
-import Label from "@/components/form/Label";
-import { TrashBinIcon, PlusIcon, FolderIcon, CheckCircleIcon, AlertIcon } from "@/icons/index";
+// import Label from "@/components/form/Label";
+import { TrashBinIcon, FolderIcon, CheckCircleIcon, AlertIcon } from "@/icons/index";
 
 interface EmbyLibrary {
   id: string;
@@ -43,9 +43,9 @@ export default function EmbyLibraryManager({
       setEmbyLibraries([]);
       setSelectedLibraries([]);
     }
-  }, [serverId]);
+  }, [serverId, loadEmbyLibraries]);
 
-  const loadEmbyLibraries = async () => {
+  const loadEmbyLibraries = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -64,7 +64,7 @@ export default function EmbyLibraryManager({
     } finally {
       setLoading(false);
     }
-  };
+  }, [serverId]);
 
   const toggleLibrary = (library: EmbyLibrary) => {
     const isSelected = selectedLibraries.includes(library.id);

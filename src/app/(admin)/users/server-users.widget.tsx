@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import Button from "@/components/ui/button/Button";
 import FormModal from "@/components/form/FormModal";
-import Label from "@/components/form/Label";
-import Select from "@/components/form/Select";
+// import Label from "@/components/form/Label";
+// import Select from "@/components/form/Select";
 import { useModal } from "@/hooks/useModal";
 import { useServerStats } from "@/hooks/useServerStats";
 import { formatDate } from "@/lib/date-utils";
-import { UserCircleIcon, PlusIcon, PencilIcon, TrashBinIcon, EyeIcon, DownloadIcon, CheckCircleIcon, BoxCubeIcon, ArrowUpIcon } from "@/icons/index";
+import { UserCircleIcon, PlusIcon, DownloadIcon } from "@/icons/index";
 import { UsersTable } from "@/components/tables/UsersTable";
 
 interface ServerUser {
@@ -407,29 +407,29 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     }
   };
 
-  const handleToggleActive = async (userId: string) => {
-    try {
-      const response = await fetch(`/api/server-users/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isActive: false, // Por ahora solo desactivar
-        }),
-      });
+  // const handleToggleActive = async (userId: string) => {
+  //   try {
+  //     const response = await fetch(`/api/server-users/${userId}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         isActive: false, // Por ahora solo desactivar
+  //       }),
+  //     });
 
-      if (response.ok) {
-        window.location.reload();
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.message}`);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al cambiar el estado del usuario");
-    }
-  };
+  //     if (response.ok) {
+  //       window.location.reload();
+  //     } else {
+  //       const error = await response.json();
+  //       alert(`Error: ${error.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     alert("Error al cambiar el estado del usuario");
+  //   }
+  // };
 
   const handleRenewCredits = async (userId: string) => {
     const creditsToAdd = prompt("¿Cuántos créditos quieres agregar? (1 crédito = 1 mes de acceso)");

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const demos = await prisma.demo.findMany({
       include: {
@@ -137,16 +137,16 @@ export async function POST(request: NextRequest) {
     });
 
     // Create UserServerLink for demo
-    const userServerLink = await prisma.userServerLink.create({
-      data: {
-        userId: demo.id, // Link to demo ID
-        serverId,
-        isDemo: true,
-        expirationDate,
-        creditType: 'ONE_CONNECTION',
-        credits: 0
-      }
-    });
+    // const userServerLink = await prisma.userServerLink.create({
+    //   data: {
+    //     userId: demo.id, // Link to demo ID
+    //     serverId,
+    //     isDemo: true,
+    //     expirationDate,
+    //     creditType: 'ONE_CONNECTION',
+    //     credits: 0
+    //   }
+    // });
 
     // Create Emby account record
     await prisma.embyAccount.create({

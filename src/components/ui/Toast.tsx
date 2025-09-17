@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { CheckCircleIcon, AlertIcon, InfoIcon, CloseIcon } from '@/icons/index';
 
 export interface ToastProps {
@@ -29,14 +29,14 @@ export default function Toast({ id, type, title, message, duration = 5000, onClo
       clearTimeout(timer);
       clearTimeout(autoCloseTimer);
     };
-  }, [duration]);
+  }, [duration, handleClose]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsLeaving(true);
     setTimeout(() => {
       onClose(id);
     }, 300);
-  };
+  }, [onClose, id]);
 
   const getIcon = () => {
     switch (type) {

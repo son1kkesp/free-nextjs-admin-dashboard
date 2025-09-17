@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { formatDate } from '@/lib/date-utils';
+// import { formatDate } from '@/lib/date-utils';
 import { CheckCircleIcon, AlertIcon, EyeIcon, EyeCloseIcon, CopyIcon } from '@/icons/index';
 import { useToastContext } from '@/components/providers/ToastProvider';
 
@@ -31,7 +31,7 @@ interface UserCardProps {
       isActive: boolean;
     } | null;
   };
-  onEdit: (user: any) => void;
+  onEdit: (user: unknown) => void;
   onRenew: (userId: string) => void;
   onToggleActive: (userId: string) => void;
   onDelete: (userId: string) => void;
@@ -60,12 +60,12 @@ export default function UserCard({ user, onEdit, onRenew, onToggleActive, onDele
     isSoon: Math.ceil((new Date(creditsInfo.expireAt).getTime() - currentTime.getTime()) / (1000 * 60 * 60 * 24)) <= 7
   } : null;
 
-  const getStatusColor = () => {
-    if (!isClient) return 'bg-green-500'; // Estado por defecto en servidor
-    if (isExpired) return 'bg-red-500';
-    if (isExpiringSoon?.isSoon) return 'bg-orange-500';
-    return 'bg-green-500';
-  };
+  // const getStatusColor = () => {
+  //   if (!isClient) return 'bg-green-500'; // Estado por defecto en servidor
+  //   if (isExpired) return 'bg-red-500';
+  //   if (isExpiringSoon?.isSoon) return 'bg-orange-500';
+  //   return 'bg-green-500';
+  // };
 
   const getStatusText = () => {
     if (!isClient) return 'Activo'; // Estado por defecto en servidor

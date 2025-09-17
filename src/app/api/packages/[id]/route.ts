@@ -76,7 +76,7 @@ export async function PUT(
     }
 
     // Update package basic info
-    const updatedPackage = await prisma.package.update({
+    await prisma.package.update({
       where: { id },
       data: {
         ...(name && { name }),

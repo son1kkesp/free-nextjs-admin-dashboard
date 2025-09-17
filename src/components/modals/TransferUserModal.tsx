@@ -62,7 +62,7 @@ export function TransferUserModal({ isOpen, onClose, user, servers, onSuccess }:
         const data = await response.json();
         error("Error", data.message || "Error al transferir el usuario.");
       }
-    } catch (err) {
+    } catch {
       error("Error", "Error de conexión. Inténtalo de nuevo.");
     } finally {
       setIsLoading(false);

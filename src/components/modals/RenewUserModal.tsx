@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useToastContext } from '@/components/providers/ToastProvider';
-import { Modal, UserInfo, ModalActions } from '@/components/ui/Modal';
+import { Modal, ModalActions } from '@/components/ui/Modal';
 
 interface RenewUserModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ interface RenewUserModalProps {
 
 export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserModalProps) {
   const [credits, setCredits] = useState(1);
-  const [creditType, setCreditType] = useState<'ONE_CONNECTION' | 'TWO_CONNECTIONS'>('ONE_CONNECTION');
+  // const [creditType, setCreditType] = useState<'ONE_CONNECTION' | 'TWO_CONNECTIONS'>('ONE_CONNECTION');
   const [isLoading, setIsLoading] = useState(false);
   const { success, error } = useToastContext();
 
@@ -53,7 +53,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
         const data = await response.json();
         error("Error", data.message || "Error al renovar el usuario.");
       }
-    } catch (err) {
+    } catch {
       error("Error", "Error de conexión. Inténtalo de nuevo.");
     } finally {
       setIsLoading(false);

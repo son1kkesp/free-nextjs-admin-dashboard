@@ -29,16 +29,16 @@ interface User {
 
 interface UsersTableProps {
   users: User[];
-  servers: any[];
+  servers: unknown[];
   onEdit: (user: User) => void;
   onDelete: (userId: string) => void;
-  onRenew: (userId: string) => void;
+  // onRenew: (userId: string) => void;
 }
 
 type SortField = 'email' | 'server' | 'expireAt' | 'status' | 'credits';
 type SortDirection = 'asc' | 'desc';
 
-export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersTableProps) {
+export function UsersTable({ users, servers, onEdit, onDelete }: UsersTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,14 +53,14 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Función para copiar al portapapeles
-  const copyToClipboard = async (text: string, label: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      success("Copiado", `${label} copiado al portapapeles`);
-    } catch (err) {
-      console.error('Error copying to clipboard:', err);
-    }
-  };
+  // const copyToClipboard = async (text: string, label: string) => {
+  //   try {
+  //     await navigator.clipboard.writeText(text);
+  //     success("Copiado", `${label} copiado al portapapeles`);
+  //   } catch (err) {
+  //     console.error('Error copying to clipboard:', err);
+  //   }
+  // };
 
   // Función para copiar datos del usuario con mensaje predefinido
   const copyUserData = async (user: User) => {
@@ -206,7 +206,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
         document.execCommand('copy');
         success("Copiado", "Texto copiado al portapapeles");
         document.body.removeChild(modal);
-      } catch (e) {
+      } catch {
         alert('Por favor, selecciona y copia el texto manualmente');
       }
     };
@@ -272,7 +272,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
   // Filtrar y ordenar usuarios
   const filteredAndSortedUsers = useMemo(() => {
-    const filtered = users.filter(user => {
+    const filtered = users.filter((user) => {
       const matchesSearch = (user.embyUserEmail || '').toLowerCase().includes(searchTerm.toLowerCase());
       const serverName = user.server?.name || '';
       const matchesServer = serverFilter === 'all' || serverName === serverFilter;
@@ -283,7 +283,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
     // Ordenar
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: unknown, bValue: unknown;
       
       switch (sortField) {
         case 'email':
@@ -360,23 +360,23 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
 
   // Función para obtener el estado visual
-  const getStatusBadge = (status: string, expireAt: Date | null) => {
-    const now = new Date();
-    const isExpired = expireAt && new Date(expireAt) < now;
-    
-    if (isExpired) {
-      return <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full dark:bg-red-900 dark:text-red-200">Expirado</span>;
-    }
-    
-    switch (status) {
-      case 'ACTIVE':
-        return <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-200">Activo</span>;
-      case 'SUSPENDED':
-        return <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full dark:bg-yellow-900 dark:text-yellow-200">Suspendido</span>;
-      default:
-        return <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full dark:bg-gray-700 dark:text-gray-200">{status}</span>;
-    }
-  };
+  // const getStatusBadge = (status: string, expireAt: Date | null) => {
+  //   const now = new Date();
+  //   const isExpired = expireAt && new Date(expireAt) < now;
+  //   
+  //   if (isExpired) {
+  //     return <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full dark:bg-red-900 dark:text-red-200">Expirado</span>;
+  //   }
+  //   
+  //   switch (status) {
+  //     case 'ACTIVE':
+  //       return <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-200">Activo</span>;
+  //     case 'SUSPENDED':
+  //       return <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full dark:bg-yellow-900 dark:text-yellow-200">Suspendido</span>;
+  //     default:
+  //       return <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full dark:bg-gray-700 dark:text-gray-200">{status}</span>;
+  //   }
+  // };
 
   // Componente para menú desplegable de acciones
   const UserActionsDropdown = ({ user, onEdit, onDelete, onTransfer }: { user: User; onEdit: (user: User) => void; onDelete: (userId: string) => void; onTransfer: (user: User) => void }) => {

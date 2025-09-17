@@ -53,7 +53,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { email, password, serverId, creditType, credits, isActive } = body;
+    const { email, password, isActive } = body;
 
     const demo = await prisma.demo.findUnique({
       where: { id },

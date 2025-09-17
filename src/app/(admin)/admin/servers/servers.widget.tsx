@@ -109,7 +109,7 @@ export default function ServersWidget({ servers }: ServersWidgetProps) {
           message: data.error || "Error de conexión" 
         });
       }
-    } catch (error) {
+    } catch {
       setTestResult({ 
         success: false, 
         message: "Error de conexión" 
