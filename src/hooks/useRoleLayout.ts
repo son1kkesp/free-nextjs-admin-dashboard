@@ -15,7 +15,7 @@ export interface RoleLayout {
   showSidebar: boolean
   showHeader: boolean
   showFooter: boolean
-  theme: 'admin' | 'reseller'
+  theme: 'admin' | 'tech' | 'reseller'
 }
 
 /**
@@ -40,7 +40,7 @@ export function useRoleLayout(): RoleLayout {
       showSidebar: true,
       showHeader: true,
       showFooter: false,
-      theme: 'admin'
+      theme: 'tech'
     }
   }
 
@@ -132,28 +132,38 @@ function getTechAdminNavigation(): NavigationItem[] {
       icon: 'dashboard'
     },
     {
-      label: 'Usuarios',
+      label: 'Usuarios de Prueba',
       href: '/users',
       icon: 'users',
       permission: 'users:read'
     },
     {
-      label: 'Servidores',
+      label: 'Servidores de Prueba',
       href: '/servers',
       icon: 'servers',
       permission: 'servers:read'
     },
     {
-      label: 'Demos',
+      label: 'Demos de Prueba',
       href: '/demos',
       icon: 'demos',
       permission: 'demos:read'
     },
     {
-      label: 'Paquetes',
+      label: 'Paquetes de Prueba',
       href: '/packages',
       icon: 'packages',
       permission: 'packages:read'
+    },
+    {
+      label: 'Desarrollo',
+      href: '/dev',
+      icon: 'code',
+      children: [
+        { label: 'Testing de Funciones', href: '/dev/features', permission: 'features:test' },
+        { label: 'Debug de Errores', href: '/dev/debug', permission: 'features:debug' },
+        { label: 'Experimentos', href: '/dev/experiments', permission: 'features:experiment' }
+      ]
     },
     {
       label: 'Sistema',
@@ -161,7 +171,7 @@ function getTechAdminNavigation(): NavigationItem[] {
       icon: 'system',
       children: [
         { label: 'Jobs y Colas', href: '/system/jobs', permission: 'jobs:read' },
-        { label: 'Logs', href: '/system/logs', permission: 'audit:read' }
+        { label: 'Logs de Debug', href: '/system/logs', permission: 'logs:debug' }
       ]
     },
     {

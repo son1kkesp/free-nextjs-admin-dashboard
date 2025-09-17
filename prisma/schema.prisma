@@ -16,6 +16,8 @@ model User {
   hashedPassword String?
   role           UserRole @default(BASIC_RESELLER)
   isActive       Boolean  @default(true)
+  isTest         Boolean  @default(false)  // Separar datos de producción vs desarrollo
+  createdBy      String?  // Quién creó este usuario
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -36,6 +38,7 @@ model EmbyServer {
   apiKey      String
   maxUsers    Int      @default(100)
   isActive    Boolean  @default(true)
+  isTest      Boolean  @default(false)  // Separar servidores de producción vs desarrollo
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -16,6 +16,8 @@ export type Resource =
   | 'jobs'
   | 'audit'
   | 'settings'
+  | 'features'
+  | 'logs'
 
 // Tipos de acciones que se pueden realizar
 export type Action = 
@@ -49,37 +51,37 @@ export const ROLE_PERMISSIONS: Record<string, AllPermissions[]> = {
   ],
 
   TECH_ADMIN: [
-    // Gestión de usuarios
+    // Gestión de usuarios de prueba
     'users:create',
     'users:read',
     'users:update',
     'users:delete',
     
-    // Gestión de servidores
+    // Gestión de servidores de prueba
     'servers:create',
     'servers:read',
     'servers:update',
     'servers:delete',
     
-    // Gestión de demos
+    // Gestión de demos de prueba
     'demos:create',
     'demos:read',
     'demos:update',
     'demos:delete',
     
-    // Gestión de paquetes
+    // Gestión de paquetes de prueba
     'packages:create',
     'packages:read',
     'packages:update',
     'packages:delete',
     
-    // Gestión de políticas
+    // Gestión de políticas de prueba
     'policies:create',
     'policies:read',
     'policies:update',
     'policies:delete',
     
-    // Gestión de librerías
+    // Gestión de librerías de prueba
     'libraries:create',
     'libraries:read',
     'libraries:update',
@@ -92,7 +94,13 @@ export const ROLE_PERMISSIONS: Record<string, AllPermissions[]> = {
     
     // Auditoría
     'audit:read',
-    'audit:view_all'
+    'audit:view_all',
+    
+    // Funciones específicas de desarrollo
+    'features:test',
+    'features:debug',
+    'features:experiment',
+    'logs:debug'
   ],
 
   PREMIUM_RESELLER: [
