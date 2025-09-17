@@ -21,12 +21,13 @@ export default async function ServerUsersPage() {
     },
   });
 
-  // Obtener los datos de EmbyAccount para cada UserServerLink de manera más eficiente
-  const userIds = [...new Set(serverUsers.map(link => link.userId))];
+  // Obtener los datos de EmbyAccount para cada UserServerLink
+  // El userId en UserServerLink parece ser el ID del EmbyAccount, no del User
+  const embyAccountIds = [...new Set(serverUsers.map(link => link.userId))];
   const embyAccounts = await prisma.embyAccount.findMany({
     where: {
-      userId: {
-        in: userIds,
+      id: {
+        in: embyAccountIds,
       },
     },
   });
@@ -34,14 +35,12 @@ export default async function ServerUsersPage() {
   // Crear un mapa para acceso rápido
   const embyAccountMap = new Map();
   embyAccounts.forEach(account => {
-    const key = `${account.userId}-${account.serverId}`;
-    embyAccountMap.set(key, account);
+    embyAccountMap.set(account.id, account);
   });
 
   // Combinar los datos
   const serverUsersWithEmby = serverUsers.map(link => {
-    const key = `${link.userId}-${link.serverId}`;
-    const embyAccount = embyAccountMap.get(key);
+    const embyAccount = embyAccountMap.get(link.userId);
     
     return {
       ...link,
