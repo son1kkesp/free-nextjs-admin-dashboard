@@ -42,9 +42,10 @@ interface Package {
   name: string;
   description: string | null;
   libraries: {
-    id: string;
-    libraryId: string | null;
-    libraryName: string | null;
+    library: {
+      id: string;
+      serverId: string;
+    };
   }[];
 }
 
@@ -158,7 +159,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     
     // Filtrar paquetes que tienen librerías en el servidor seleccionado
     return packages.filter(pkg => 
-      pkg.libraries.some(lib => lib.serverId === formData.serverId)
+      pkg.libraries && pkg.libraries.some(pkgLib => pkgLib.library.serverId === formData.serverId)
     );
   };
 

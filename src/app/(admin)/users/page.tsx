@@ -65,6 +65,16 @@ export default async function ServerUsersPage() {
       id: true,
       name: true,
       description: true,
+      libraries: {
+        select: {
+          library: {
+            select: {
+              id: true,
+              serverId: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       name: "asc",
