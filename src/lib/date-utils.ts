@@ -5,13 +5,19 @@ export function formatDate(date: Date | string): string {
     return 'Fecha inválida';
   }
   
-  return d.toLocaleDateString('es-ES', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  // Usar UTC para evitar diferencias entre servidor y cliente
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  const hours = d.getUTCHours();
+  const minutes = d.getUTCMinutes();
+  
+  const formattedDay = day.toString().padStart(2, '0');
+  const formattedMonth = month.toString().padStart(2, '0');
+  const formattedHours = hours.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  
+  return `${formattedDay}/${formattedMonth}/${year}, ${formattedHours}:${formattedMinutes}`;
 }
 
 export function formatDateOnly(date: Date | string): string {
@@ -21,11 +27,15 @@ export function formatDateOnly(date: Date | string): string {
     return 'Fecha inválida';
   }
   
-  return d.toLocaleDateString('es-ES', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
+  // Usar UTC para evitar diferencias entre servidor y cliente
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  
+  const formattedDay = day.toString().padStart(2, '0');
+  const formattedMonth = month.toString().padStart(2, '0');
+  
+  return `${formattedDay}/${formattedMonth}/${year}`;
 }
 
 export function formatTimeRemaining(date: Date | string): string {
@@ -91,5 +101,17 @@ export function formatExpirationDate(date: Date | string | null): string {
     return 'Fecha inválida';
   }
   
-  return formatDate(d);
+  // Usar UTC para evitar diferencias entre servidor y cliente
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  const hours = d.getUTCHours();
+  const minutes = d.getUTCMinutes();
+  
+  const formattedDay = day.toString().padStart(2, '0');
+  const formattedMonth = month.toString().padStart(2, '0');
+  const formattedHours = hours.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  
+  return `${formattedDay}/${formattedMonth}/${year}, ${formattedHours}:${formattedMinutes}`;
 }
