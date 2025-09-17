@@ -1,7 +1,7 @@
 "use client"
 
 import { usePermissions } from "@/hooks/usePermissions"
-import { Badge } from "@/components/ui/badge/Badge"
+import Badge from "@/components/ui/badge/Badge"
 
 interface PermissionInfoProps {
   showDetails?: boolean
