@@ -4,7 +4,7 @@ import { useState } from "react"
 import { signIn, getSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Button from "@/components/ui/button/Button"
-import { EyeIcon, EyeSlashIcon } from "@/icons/index"
+import { EyeIcon, EyeCloseIcon } from "@/icons/index"
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
@@ -96,7 +96,7 @@ export default function SignInPage() {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                    <EyeCloseIcon className="h-5 w-5 text-gray-400" />
                   ) : (
                     <EyeIcon className="h-5 w-5 text-gray-400" />
                   )}
