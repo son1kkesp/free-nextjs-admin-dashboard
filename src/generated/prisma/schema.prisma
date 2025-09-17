@@ -1,0 +1,329 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------
+// Enums
+// ------------------------------------------------------------
+
+enum RoleName {
+  SUPER_ADMIN // Dueño del panel
+  TECH_ADMIN // Técnico general (sin creación de cuentas)
+  PREMIUM_RESELLER // Acceso completo por servidor(s), sin créditos
+  ADVANCED_RESELLER // Servidores compartidos, con sistema de créditos
+  BASIC_RESELLER // Servidores compartidos, créditos diferenciados
+  READ_ONLY // Solo lectura
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+}
+
+// ------------------------------------------------------------
+// Modelos base de identidad y permisos
+// ------------------------------------------------------------
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  // Para auth con credenciales locales (si aplica)
+  hashedPassword String?
+  role           RoleName @default(READ_ONLY)
+
+  // Configuración de dominio para cuentas creadas
+  defaultDomain String? // Dominio por defecto para emails de cuentas creadas (ej: "mydomain.com")
+
+  // Relación con tier de reseller (si aplica)
+  resellerTierId String?
+  resellerTier   ResellerTier? @relation(fields: [resellerTierId], references: [id])
+
+  // Créditos del reseller/operador (no del usuario final de Emby)
+  creditBalance CreditBalance?
+
+  // Propiedad/gestión de servidores (si el usuario es admin/reseller dueño)
+  ownedServers EmbyServer[]
+
+  // Auditoría
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  isActive        Boolean   @default(true)
+  suspensionUntil DateTime?
+
+  // NOTA: Los enlaces a servidores ahora están en EmbyUser
+  // Los usuarios del panel (User) no tienen enlaces directos a servidores
+
+  // Relaciones inversas para auditoría y suspensiones
+  creditLogsAuthored CreditLog[]      @relation("CreditLog_actor")
+  creditLogsTargeted CreditLog[]      @relation("CreditLog_TargetUser")
+  suspendedLinks     UserServerLink[] @relation("SuspendedBy")
+}
+
+// ------------------------------------------------------------
+// Usuarios del servidor Emby (usuarios finales)
+// ------------------------------------------------------------
+
+model EmbyUser {
+  id             String  @id @default(cuid())
+  email          String  @unique
+  name           String?
+  hashedPassword String?
+
+  // Relaciones con servidores
+  userServerLinks UserServerLink[]
+  embyAccounts    EmbyAccount[]
+
+  // Auditoría
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ResellerTier {
+  id               String  @id @default(cuid())
+  name             String  @unique
+  description      String?
+  // Parámetros configurables por tier
+  // p.ej.: creditToDaysRate: 1 crédito = 30 días
+  creditToDaysRate Int     @default(30)
+
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CreditBalance {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  balance   Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+model CreditLog {
+  id          String @id @default(cuid())
+  actorUserId String // quién realiza la acción (admin/reseller)
+  actor       User   @relation("CreditLog_actor", fields: [actorUserId], references: [id])
+
+  delta  Int // positivo o negativo
+  reason String?
+
+  // Opcional: objetivo de la acción (p.ej. asignación a un usuario final)
+  targetUserId String?
+  targetUser   User?   @relation("CreditLog_TargetUser", fields: [targetUserId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// ------------------------------------------------------------
+// Servidores y paquetes (librerías) de Emby
+// ------------------------------------------------------------
+
+model EmbyServer {
+  id              String  @id @default(cuid())
+  name            String
+  baseUrl         String // https://emby.example.com
+  apiKey          String // API Key del servidor (gestiona el admin correspondiente)
+  ownerUserId     String? // dueño/gestor del servidor en el panel
+  owner           User?   @relation(fields: [ownerUserId], references: [id])
+  maxUsers        Int     @default(100) // Límite máximo de usuarios (incluyendo demos)
+  referenceUserId String? // ID del usuario de Emby cuyas políticas se usarán como plantilla
+
+  // Paquetes de este servidor
+  packages Package[]
+
+  // Enlaces usuarios-servidor
+  userLinks    UserServerLink[]
+  embyAccounts EmbyAccount[]
+
+  // Políticas del servidor
+  userPolicies UserPolicy[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Package {
+  id          String     @id @default(cuid())
+  serverId    String
+  server      EmbyServer @relation(fields: [serverId], references: [id])
+  name        String
+  description String?
+
+  libraries PackageLibrary[]
+  userLinks UserServerLink[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model PackageLibrary {
+  id          String  @id @default(cuid())
+  packageId   String
+  package     Package @relation(fields: [packageId], references: [id])
+  // Identificadores de bibliotecas en Emby (podemos almacenar ID externo o nombre)
+  libraryId   String?
+  libraryName String?
+}
+
+// ------------------------------------------------------------
+// Vínculos entre usuarios del panel y el acceso en servidores Emby
+// ------------------------------------------------------------
+
+model UserServerLink {
+  id         String     @id @default(cuid())
+  embyUserId String
+  embyUser   EmbyUser   @relation(fields: [embyUserId], references: [id])
+  serverId   String
+  server     EmbyServer @relation(fields: [serverId], references: [id])
+
+  // Paquete asignado (qué librerías verá en Emby)
+  packageId String?
+  package   Package? @relation(fields: [packageId], references: [id])
+
+  status   AccountStatus @default(ACTIVE)
+  startAt  DateTime      @default(now())
+  expireAt DateTime?
+
+  // Control de suspensión/expiración (quién del panel suspendió)
+  suspendedAt   DateTime?
+  suspendedById String?
+  suspendedBy   User?     @relation("SuspendedBy", fields: [suspendedById], references: [id])
+
+  // Sistema de créditos para tiempo de acceso
+  creditsAllocated Int @default(0) // Créditos asignados (1 crédito = 1 mes de acceso)
+  creditsUsed      Int @default(0) // Créditos utilizados
+  creditsRemaining Int @default(0) // Créditos restantes (calculado)
+
+  // Tipo de crédito (conexiones simultáneas permitidas)
+  creditType String @default("1_CONNECTION") // "1_CONNECTION" o "2_CONNECTIONS"
+
+  // Sistema de horas para demos
+  demoHours Int? // Horas de acceso para demos (máximo 24)
+  isDemo    Boolean @default(false) // Indica si es una cuenta demo
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relación con EmbyAccount
+  embyAccount EmbyAccount?
+
+  @@unique([embyUserId, serverId])
+  @@index([embyUserId, serverId], name: "idx_embyuser_server_unique")
+}
+
+// Cuenta real de Emby por servidor, vinculada a un usuario del servidor
+model EmbyAccount {
+  id         String     @id @default(cuid())
+  embyUserId String
+  embyUser   EmbyUser   @relation(fields: [embyUserId], references: [id])
+  serverId   String
+  server     EmbyServer @relation(fields: [serverId], references: [id])
+
+  embyUserIdInternal String // ID interno de Emby
+  embyUsername       String
+
+  // Relación con UserServerLink
+  userServerLinkId String?         @unique
+  userServerLink   UserServerLink? @relation(fields: [userServerLinkId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([embyUserId, serverId])
+}
+
+// ------------------------------------------------------------
+// Políticas de usuario (configuración global)
+// ------------------------------------------------------------
+
+model UserPolicy {
+  id          String  @id @default(cuid())
+  name        String  @unique // Nombre descriptivo de la política
+  description String? // Descripción de qué hace esta política
+  isTemplate  Boolean @default(false) // Si es una plantilla base
+
+  // Configuraciones básicas de Emby
+  isAdministrator            Boolean @default(false)
+  isHidden                   Boolean @default(false)
+  isDisabled                 Boolean @default(false)
+  maxParentalRating          Int     @default(0)
+  enableUserPreferenceAccess Boolean @default(true)
+
+  // Configuraciones de transcoding
+  enableAudioPlaybackTranscoding Boolean @default(true)
+  enableVideoPlaybackTranscoding Boolean @default(true)
+  enablePlaybackRemuxing         Boolean @default(true)
+  forceRemoteSourceTranscoding   Boolean @default(false)
+  enableSyncTranscoding          Boolean @default(false)
+  enableMediaConversion          Boolean @default(false)
+
+  // Configuraciones de descarga
+  enableContentDownloading Boolean @default(false)
+  enableContentDeletion    Boolean @default(false)
+
+  // Configuraciones de carga
+  enableCameraUpload Boolean @default(false) // Permitir carga de cámara
+
+  // Configuraciones de streaming
+  enableRemoteAccess       Boolean @default(true)
+  enableMediaPlayback      Boolean @default(true)
+  remoteClientBitrateLimit Int     @default(0)
+
+  // Configuraciones de dispositivos
+  maxActiveSessions Int     @default(0) // 0 = sin límite
+  enableAllDevices  Boolean @default(true)
+
+  // Configuraciones de Live TV
+  enableLiveTvManagement Boolean @default(false)
+  enableLiveTvAccess     Boolean @default(false)
+  enableAllChannels      Boolean @default(true)
+
+  // Configuraciones de control
+  enableRemoteControlOfOtherUsers Boolean @default(false)
+  enableSharedDeviceControl       Boolean @default(false)
+
+  // Configuraciones de acceso
+  enablePublicSharing Boolean @default(false)
+  enableAllFolders    Boolean @default(true)
+
+  // Configuraciones de seguridad
+  loginAttemptsBeforeLockout Int @default(-1) // -1 = sin límite
+
+  // Configuraciones de SyncPlay
+  syncPlayAccess String @default("CreateAndJoinGroups")
+
+  // Configuraciones de horarios (opcional)
+  enableSchedule Boolean @default(false)
+  scheduleStart  String? // Hora de inicio (HH:MM)
+  scheduleEnd    String? // Hora de fin (HH:MM)
+
+  // Campos JSON para configuraciones complejas
+  blockedTags         String? // JSON array
+  blockedMediaFolders String? // JSON array
+  blockedChannels     String? // JSON array
+  accessSchedules     String? // JSON array
+  blockUnratedItems   String? // JSON array
+
+  // Relación con servidor
+  serverId String?
+  server   EmbyServer? @relation(fields: [serverId], references: [id])
+
+  // Auditoría
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serverId])
+}

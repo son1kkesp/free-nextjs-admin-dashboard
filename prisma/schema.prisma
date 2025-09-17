@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  hashedPassword String?
+  role           UserRole @default(BASIC_RESELLER)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relaciones
+  embyAccounts   EmbyAccount[]
+  demos          Demo[]
+  servers        EmbyServer[]
+  packages       Package[]
+  policies       Policy[]
+
+  @@map("users")
+}
+
+model EmbyServer {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  apiKey      String
+  maxUsers    Int      @default(100)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userServerLinks UserServerLink[]
+  packages    Package[]
+  libraries   Library[]
+  demos       Demo[]
+
+  @@map("emby_servers")
+}
+
+model EmbyAccount {
+  id              String   @id @default(cuid())
+  embyUserId      String   @unique
+  embyUserName    String
+  embyUserEmail   String
+  serverId        String
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relaciones
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("emby_accounts")
+}
+
+model UserServerLink {
+  id              String   @id @default(cuid())
+  userId          String
+  serverId        String
+  isDemo          Boolean  @default(false)
+  expirationDate  DateTime?
+  creditType      CreditType @default(ONE_CONNECTION)
+  credits         Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relaciones
+  server          EmbyServer @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, serverId])
+  @@map("user_server_links")
+}
+
+model Demo {
+  id              String   @id @default(cuid())
+  email           String
+  password        String
+  embyUserName    String
+  serverId        String
+  hoursDuration   Int      @default(24)
+  expirationDate  DateTime
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relaciones
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  server          EmbyServer @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  @@map("demos")
+}
+
+model Package {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  serverId    String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  server      EmbyServer @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  libraries   PackageLibrary[]
+
+  @@map("packages")
+}
+
+model Library {
+  id          String   @id @default(cuid())
+  embyId      String
+  name        String
+  serverId    String
+  createdAt   DateTime @default(now())
+
+  // Relaciones
+  server      EmbyServer @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  packageLibraries PackageLibrary[]
+
+  @@unique([embyId, serverId])
+  @@map("libraries")
+}
+
+model PackageLibrary {
+  id          String   @id @default(cuid())
+  packageId   String
+  libraryId   String
+  createdAt   DateTime @default(now())
+
+  // Relaciones
+  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  library     Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+
+  @@unique([packageId, libraryId])
+  @@map("package_libraries")
+}
+
+model Policy {
+  id                    String   @id @default(cuid())
+  name                  String
+  description           String?
+  isGlobal              Boolean  @default(false)
+  allowCameraUpload     Boolean  @default(false)
+  allowPasswordChange   Boolean  @default(false)
+  allowTranscoding      Boolean  @default(false)
+  allowRemuxing         Boolean  @default(false)
+  allowAudioTranscoding Boolean  @default(false)
+  enableNotifications   Boolean  @default(false)
+  policyData            Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relaciones
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("policies")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  TECH_ADMIN
+  PREMIUM_RESELLER
+  ADVANCED_RESELLER
+  BASIC_RESELLER
+}
+
+enum CreditType {
+  ONE_CONNECTION
+  TWO_CONNECTIONS
+}
