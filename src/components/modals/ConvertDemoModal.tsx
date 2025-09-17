@@ -86,7 +86,7 @@ export function ConvertDemoModal({ isOpen, onClose, demo, onSuccess }: ConvertDe
       gradientFrom="from-orange-500"
       gradientTo="to-red-600"
       isLoading={isLoading}
-      size="lg"
+      size="md"
     >
       {demo && (
         <>

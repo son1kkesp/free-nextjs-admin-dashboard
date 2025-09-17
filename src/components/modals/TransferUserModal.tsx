@@ -88,7 +88,7 @@ export function TransferUserModal({ isOpen, onClose, user, servers, onSuccess }:
       gradientFrom="from-purple-500"
       gradientTo="to-indigo-600"
       isLoading={isLoading}
-      size="lg"
+      size="md"
     >
       {user && (
         <>

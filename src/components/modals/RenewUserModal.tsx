@@ -41,7 +41,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credits, creditType }),
+        body: JSON.stringify({ credits, creditType: user.creditType || 'ONE_CONNECTION' }),
       });
 
       if (response.ok) {
@@ -96,11 +96,19 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
       gradientFrom="from-green-500"
       gradientTo="to-emerald-600"
       isLoading={isLoading}
-      size="lg"
+      size="md"
     >
       {user && (
         <>
-          <UserInfo user={user} />
+          {/* Información simplificada del usuario */}
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-600 dark:text-gray-400">👤</span>
+              <span className="text-gray-900 dark:text-white font-medium">
+                {user.embyUserEmail || user.embyUserName || `ID: ${user.id}`}
+              </span>
+            </div>
+          </div>
 
           <div className="space-y-6">
             {/* Créditos */}
@@ -134,65 +142,18 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
               </p>
             </div>
 
-            {/* Tipo de conexión */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                <span className="flex items-center space-x-2">
-                  <span>🔗</span>
-                  <span>Tipo de Conexión</span>
-                </span>
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setCreditType('ONE_CONNECTION')}
-                  disabled={isLoading}
-                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                    creditType === 'ONE_CONNECTION'
-                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">🔌</div>
-                    <div className="font-semibold">1 Conexión</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Acceso estándar</div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCreditType('TWO_CONNECTIONS')}
-                  disabled={isLoading}
-                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                    creditType === 'TWO_CONNECTIONS'
-                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">🔗</div>
-                    <div className="font-semibold">2 Conexiones</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Acceso premium</div>
-                  </div>
-                </button>
-              </div>
-            </div>
 
-            {/* Resumen */}
-            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-green-600 dark:text-green-400">📋</span>
-                <h4 className="font-semibold text-green-900 dark:text-green-100">Resumen de renovación</h4>
-              </div>
+            {/* Resumen simplificado */}
+            <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-green-700 dark:text-green-300">Tipo de conexión:</span>
                   <span className="font-medium text-green-900 dark:text-green-100">
-                    {creditType === 'ONE_CONNECTION' ? '1 Conexión' : '2 Conexiones'}
+                    {user.creditType === 'ONE_CONNECTION' ? '1 Conexión' : '2 Conexiones'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-green-700 dark:text-green-300">Nueva fecha de expiración:</span>
+                  <span className="text-green-700 dark:text-green-300">Nueva fecha:</span>
                   <span className="font-semibold text-green-900 dark:text-green-100">
                     {calculateNewExpirationDate()}
                   </span>
