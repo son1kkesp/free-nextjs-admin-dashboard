@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal } from "@/components/ui/modal";
+import { Modal, ModalActions } from "@/components/ui/Modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -59,24 +59,23 @@ export default function FormModal({
     }));
   };
 
+  const editIcon = icon || (
+    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  );
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} className="max-w-2xl mx-4">
-      <div className="p-4 sm:p-6 space-y-6 max-h-[80vh] overflow-y-auto">
-        {/* Header con icono y descripción */}
-        {(icon || description) && (
-          <div className="text-center">
-            {icon && (
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
-                {icon}
-              </div>
-            )}
-            {description && (
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {description}
-              </p>
-            )}
-          </div>
-        )}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      subtitle={description}
+      icon={editIcon}
+      variant="primary"
+      size="lg"
+    >
+      <div className="space-y-6">
 
         <form onSubmit={onSubmit} className="space-y-6">
           {/* Campos del formulario */}
@@ -227,30 +226,18 @@ export default function FormModal({
           )}
 
           {/* Botones de acción */}
-          <div className="flex gap-3 pt-6">
-            <Button
-              type="button"
-              onClick={onClose}
-              variant="outline"
-              className="flex-1 rounded-xl border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                  Guardando...
-                </div>
-              ) : (
-                submitText
-              )}
-            </Button>
-          </div>
+          <ModalActions
+            onCancel={onClose}
+            onSubmit={() => {
+              const form = document.querySelector('form');
+              if (form) {
+                form.requestSubmit();
+              }
+            }}
+            submitText={submitText}
+            isLoading={isSubmitting}
+            submitVariant="primary"
+          />
         </form>
       </div>
     </Modal>
