@@ -72,7 +72,8 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     serverId: "", // Servidor seleccionado
     packageId: "", // Paquete del servidor seleccionado
     creditsAllocated: "1", // Por defecto 1 crédito
-    creditType: "1_CONNECTION",
+    creditType: "ONE_CONNECTION",
+    expirationDate: "", // Fecha de expiración para edición
   });
 
   const handleCreateUser = () => {
@@ -83,13 +84,22 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       serverId: "", // Servidor seleccionado
       packageId: "", // Paquete del servidor seleccionado
       creditsAllocated: "1", // Por defecto 1 crédito
-      creditType: "1_CONNECTION",
+      creditType: "ONE_CONNECTION",
+      expirationDate: "",
     });
     openModal();
   };
 
   const handleEditUser = (user: ServerUser) => {
     setSelectedUser(user);
+    
+    // Formatear la fecha de expiración para el input date
+    let expirationDateFormatted = "";
+    if (user.expirationDate) {
+      const date = new Date(user.expirationDate);
+      expirationDateFormatted = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    }
+    
     setFormData({
       email: user.embyUserEmail || '',
       password: "",
@@ -97,6 +107,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       packageId: "",
       creditsAllocated: user.credits.toString(),
       creditType: user.creditType,
+      expirationDate: expirationDateFormatted,
     });
     openModal();
   };
@@ -121,6 +132,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
           packageId: formData.packageId,
           creditsAllocated: parseInt(formData.creditsAllocated) || 0,
           creditType: formData.creditType,
+          expirationDate: formData.expirationDate || null,
           isDemo: false, // Siempre false para usuarios regulares
         }),
       });
@@ -163,8 +175,8 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     );
   };
 
-  // Definir campos del formulario
-  const formFields = [
+  // Definir campos del formulario para crear usuario
+  const createUserFields = [
     {
       id: "email",
       label: "Email",
@@ -300,6 +312,56 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       description: "Número de dispositivos que pueden conectarse simultáneamente. Ambos tipos dan la misma duración de acceso.",
     },
   ];
+
+  // Campos específicos para editar usuario (solo fecha de expiración, tipo de créditos y contraseña)
+  const editUserFields = [
+    {
+      id: "expirationDate",
+      label: "Fecha de Expiración",
+      type: "date" as const,
+      required: true,
+      value: formData.expirationDate || "",
+      onChange: (value: string) => setFormData({ ...formData, expirationDate: value }),
+      description: "Fecha hasta la cual el usuario tendrá acceso",
+    },
+    {
+      id: "creditType",
+      label: "Tipo de Crédito",
+      type: "select" as const,
+      required: true,
+      value: formData.creditType,
+      onChange: (value: string) => setFormData({ ...formData, creditType: value }),
+      options: [
+        { value: "ONE_CONNECTION", label: "1 Conexión Simultánea (Básico)" },
+        { value: "TWO_CONNECTIONS", label: "2 Conexiones Simultáneas (Premium)" },
+      ],
+      description: "Número de dispositivos que pueden conectarse simultáneamente",
+    },
+    {
+      id: "password",
+      label: "Nueva Contraseña (Opcional)",
+      type: "password" as const,
+      placeholder: "••••••••",
+      required: false,
+      value: formData.password,
+      onChange: (value: string) => setFormData({ ...formData, password: value }),
+      description: "Deja vacío para mantener la contraseña actual",
+      generateButton: {
+        onClick: () => {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+          let password = '';
+          for (let i = 0; i < 8; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          setFormData({ ...formData, password: password });
+        },
+        label: "Generar contraseña aleatoria",
+      },
+    },
+  ];
+
+  // Determinar qué campos usar según el modo
+  const formFields = selectedUser ? editUserFields : createUserFields;
 
   const handleDeleteUser = async (userId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este usuario del servidor?")) {
@@ -501,13 +563,13 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       <FormModal
         isOpen={isOpen}
         onClose={closeModal}
-        title={selectedUser ? "Modificar Usuario" : "Crear Usuario de Servidor"}
+        title={selectedUser ? "Editar Usuario" : "Crear Usuario de Servidor"}
         fields={formFields}
         onSubmit={handleSubmit}
-        submitText={selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
+        submitText={selectedUser ? "Guardar Cambios" : "Crear Usuario"}
         isSubmitting={isSubmitting}
         icon={<UserCircleIcon />}
-        description={selectedUser ? "Modifica la información del usuario del servidor" : "Crea un nuevo usuario para acceder a los servidores Emby"}
+        description={selectedUser ? "Edita la fecha de expiración, tipo de créditos y contraseña del usuario" : "Crea un nuevo usuario para acceder a los servidores Emby"}
       >
         {/* Información de fecha de expiración calculada */}
         {!selectedUser && formData.creditsAllocated && (
