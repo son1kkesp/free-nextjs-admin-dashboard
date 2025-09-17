@@ -448,8 +448,8 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
           <span className="text-sm text-gray-600 dark:text-gray-400">Activos:</span>
           <span className="font-semibold text-green-600 dark:text-green-400">
             {filteredAndSortedUsers.filter(user => {
-              const creditsInfo = user.userServerLink;
-              const isExpired = creditsInfo?.expireAt ? new Date(creditsInfo.expireAt) < new Date() : false;
+              if (!user.expirationDate) return false;
+              const isExpired = new Date(user.expirationDate) < new Date();
               return !isExpired;
             }).length}
           </span>
@@ -460,10 +460,9 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
           <span className="text-sm text-gray-600 dark:text-gray-400">Casi expirados:</span>
           <span className="font-semibold text-yellow-600 dark:text-yellow-400">
             {filteredAndSortedUsers.filter(user => {
-              const creditsInfo = user.userServerLink;
-              if (!creditsInfo?.expireAt) return false;
+              if (!user.expirationDate) return false;
               
-              const expireDate = new Date(creditsInfo.expireAt);
+              const expireDate = new Date(user.expirationDate);
               const now = new Date();
               const diffTime = expireDate.getTime() - now.getTime();
               const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -479,8 +478,8 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
           <span className="text-sm text-gray-600 dark:text-gray-400">Expirados:</span>
           <span className="font-semibold text-red-600 dark:text-red-400">
             {filteredAndSortedUsers.filter(user => {
-              const creditsInfo = user.userServerLink;
-              return creditsInfo?.expireAt ? new Date(creditsInfo.expireAt) < new Date() : false;
+              if (!user.expirationDate) return false;
+              return new Date(user.expirationDate) < new Date();
             }).length}
           </span>
         </div>
