@@ -60,7 +60,7 @@ export function Modal({
   const currentVariant = variantClasses[variant];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[999999] overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
         {/* Overlay limpio sin blur */}
         <div 
