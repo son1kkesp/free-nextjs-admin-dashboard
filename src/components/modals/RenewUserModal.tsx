@@ -8,15 +8,11 @@ interface RenewUserModalProps {
   onClose: () => void;
   user: {
     id: string;
-    embyUser: {
-      email: string;
-    };
-    userServerLink?: {
-      expireAt: Date | null;
-      creditsAllocated: number;
-      creditsRemaining: number;
-      creditType: string;
-    };
+    embyUserEmail: string;
+    expirationDate: Date | null;
+    creditsAllocated?: number;
+    creditsRemaining?: number;
+    creditType?: string;
   } | null;
   onSuccess: () => void;
 }
@@ -27,7 +23,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
   const [isLoading, setIsLoading] = useState(false);
   const { success, error } = useToastContext();
 
-  if (!isOpen || !user || !user.embyUser || !user.embyUser.email) {
+  if (!isOpen || !user || !user.embyUserEmail) {
     return null;
   }
 
@@ -50,7 +46,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
       });
 
       if (response.ok) {
-        success("Éxito", `Usuario ${user.embyUser.email} renovado exitosamente.`);
+        success("Éxito", `Usuario ${user.embyUserEmail} renovado exitosamente.`);
         onSuccess();
         onClose();
       } else {
@@ -66,7 +62,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
   };
 
   const calculateNewExpirationDate = () => {
-    const currentExpireAt = user.userServerLink?.expireAt;
+    const currentExpireAt = user.expirationDate;
     const baseDate = currentExpireAt && new Date(currentExpireAt) > new Date()
       ? new Date(currentExpireAt)
       : new Date();
@@ -112,7 +108,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
                     Usuario a renovar:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {user.embyUser.email}
+                    {user.embyUserEmail}
                   </p>
                 </div>
 
