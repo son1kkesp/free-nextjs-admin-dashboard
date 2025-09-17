@@ -351,7 +351,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
       onChange: (value: string) => setFormData({ ...formData, password: value }),
       description: "Deja vacío para mantener la contraseña actual",
       showCurrentValue: true,
-      currentValue: "•••••••• (actual)",
+      currentValue: "••••••••",
       generateButton: {
         onClick: () => {
           const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
