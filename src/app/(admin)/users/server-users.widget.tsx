@@ -26,6 +26,9 @@ interface ServerUser {
     name: string;
     url: string;
   };
+  // Esta es la estructura real que viene de UserServerLink
+  embyUserEmail?: string;
+  embyUserName?: string;
 }
 
 interface Server {
@@ -87,12 +90,12 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
   const handleEditUser = (user: ServerUser) => {
     setSelectedUser(user);
     setFormData({
-      email: user.embyUser.email,
+      email: user.embyUserEmail || '',
       password: "",
       serverId: user.server.id,
-      packageId: user.userServerLink?.packageId || "",
-      creditsAllocated: user.userServerLink?.creditsAllocated?.toString() || "1",
-      creditType: user.userServerLink?.creditType || "1_CONNECTION",
+      packageId: "",
+      creditsAllocated: user.credits.toString(),
+      creditType: user.creditType,
     });
     openModal();
   };
@@ -388,8 +391,8 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
     const csvContent = [
       ["Email", "Usuario Emby", "Servidor", "Creado"],
       ...serverUsers.map(user => [
-        user.embyUser.email,
-        user.embyUsername,
+        user.embyUserEmail || '',
+        user.embyUserName || '',
         user.server.name,
         formatDate(user.createdAt),
       ])

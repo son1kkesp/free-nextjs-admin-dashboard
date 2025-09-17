@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import ServerUsersWidget from "./server-users.widget";
 
 export default async function ServerUsersPage() {
-  // Simplificar consultas para evitar errores
-  const serverUsers = await prisma.userServerLink.findMany({
+  // Obtener usuarios con sus datos de Emby
+  const userServerLinks = await prisma.userServerLink.findMany({
     where: {
       isDemo: false, // Solo usuarios reales, no demos
     },
@@ -20,6 +20,24 @@ export default async function ServerUsersPage() {
       createdAt: "desc",
     },
   });
+
+  // Obtener los datos de EmbyAccount para cada UserServerLink
+  const serverUsers = await Promise.all(
+    userServerLinks.map(async (link) => {
+      const embyAccount = await prisma.embyAccount.findFirst({
+        where: {
+          userId: link.userId,
+          serverId: link.serverId,
+        },
+      });
+
+      return {
+        ...link,
+        embyUserEmail: embyAccount?.embyUserEmail || '',
+        embyUserName: embyAccount?.embyUserName || '',
+      };
+    })
+  );
   
   const servers = await prisma.embyServer.findMany({
     select: {
