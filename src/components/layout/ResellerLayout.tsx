@@ -1,8 +1,12 @@
 "use client"
 
 import { ReactNode } from "react"
+import { useSidebar } from "@/context/SidebarContext"
 import { usePermissions } from "@/hooks/usePermissions"
-import RoleBasedNavigation from "@/components/navigation/RoleBasedNavigation"
+import AppHeader from "@/layout/AppHeader"
+import AppSidebar from "@/layout/AppSidebar"
+import Backdrop from "@/layout/Backdrop"
+import { ToastProvider } from "@/components/providers/ToastProvider"
 import PermissionInfo from "@/components/auth/PermissionInfo"
 
 interface ResellerLayoutProps {
@@ -10,44 +14,52 @@ interface ResellerLayoutProps {
 }
 
 export default function ResellerLayout({ children }: ResellerLayoutProps) {
+  const { isExpanded, isHovered, isMobileOpen } = useSidebar()
   const { userPermissions } = usePermissions()
 
+  // Dynamic class for main content margin based on sidebar state
+  const mainContentMargin = isMobileOpen
+    ? "ml-0"
+    : isExpanded || isHovered
+    ? "lg:ml-[260px]"
+    : "lg:ml-[90px]"
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Panel de Reseller
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {userPermissions?.role?.replace('_', ' ')} - Gestión de usuarios y demos
-              </p>
+    <ToastProvider>
+      <div className="min-h-screen xl:flex overflow-x-hidden">
+        {/* Sidebar and Backdrop */}
+        <AppSidebar />
+        <Backdrop />
+        {/* Main Content Area */}
+        <div
+          className={`flex-1 transition-all duration-300 ease-in-out overflow-x-hidden ${mainContentMargin}`}
+        >
+          {/* Header */}
+          <AppHeader />
+          {/* Page Content */}
+          <div className="p-3 md:p-4 overflow-x-hidden w-full">
+            {/* Reseller Info Banner */}
+            <div className="mb-6 bg-green-50 border-l-4 border-green-500 text-green-700 p-4 dark:bg-green-900/20 dark:border-green-400 dark:text-green-300">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium">
+                    💼 <strong>Panel de Reseller</strong>
+                  </p>
+                  <p className="text-sm mt-1">
+                    {userPermissions?.role?.replace('_', ' ')} - Gestión de usuarios y demos
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <PermissionInfo showDetails={false} />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 min-h-screen">
-          <div className="p-4">
-            <RoleBasedNavigation />
-          </div>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6">
-          <div className="max-w-7xl mx-auto">
             {children}
           </div>
-        </main>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   )
 }

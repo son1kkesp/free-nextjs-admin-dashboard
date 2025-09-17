@@ -4,6 +4,7 @@ import './globals.css';
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import SessionProvider from '@/components/providers/SessionProvider';
+import DynamicLayout from '@/components/layout/DynamicLayout';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -19,7 +20,9 @@ export default function RootLayout({
       <body className={`${outfit.className} dark:bg-gray-900 overflow-x-hidden`}>
         <SessionProvider>
           <ThemeProvider>
-            <SidebarProvider>{children}</SidebarProvider>
+            <SidebarProvider>
+              <DynamicLayout>{children}</DynamicLayout>
+            </SidebarProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>
