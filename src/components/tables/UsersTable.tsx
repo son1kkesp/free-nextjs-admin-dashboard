@@ -22,6 +22,9 @@ interface User {
     name: string;
     url: string;
   };
+  // Datos de Emby
+  embyUserEmail?: string;
+  embyUserName?: string;
 }
 
 interface UsersTableProps {
@@ -61,14 +64,14 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
   // Función para copiar datos del usuario con mensaje predefinido
   const copyUserData = async (user: User) => {
-    const serverName = user.userServerLink?.server?.name || user.server?.name || 'N/A';
-    const connections = user.userServerLink?.creditType === 'ONE_CONNECTION' ? '1' : '2';
-    const expireDate = formatExpirationDate(user.userServerLink?.expireAt || null);
+    const serverName = user.server?.name || 'N/A';
+    const connections = user.creditType === 'ONE_CONNECTION' ? '1' : '2';
+    const expireDate = formatExpirationDate(user.expirationDate || null);
     
     // Mensaje predefinido (más adelante se podrá configurar desde Configuración)
     const message = `🎬 *Datos de tu cuenta StreamCloud*
 
-📧 **Email:** ${user.embyUser.email}
+📧 **Email:** ${user.embyUserEmail || 'Sin email'}
 🔑 **Contraseña:** [Contraseña del usuario]
 🖥️ **Servidor:** ${serverName}
 🔗 **Conexiones:** ${connections} dispositivo${connections === '1' ? '' : 's'} simultáneo${connections === '1' ? '' : 's'}
@@ -222,10 +225,10 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
   // Filtrar y ordenar usuarios
   const filteredAndSortedUsers = useMemo(() => {
     let filtered = users.filter(user => {
-      const matchesSearch = user.embyUser.email.toLowerCase().includes(searchTerm.toLowerCase());
-      const serverName = user.userServerLink?.server?.name || user.server?.name || '';
+      const matchesSearch = (user.embyUserEmail || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const serverName = user.server?.name || '';
       const matchesServer = serverFilter === 'all' || serverName === serverFilter;
-      const matchesStatus = statusFilter === 'all' || (user.userServerLink?.status || 'ACTIVE') === statusFilter;
+      const matchesStatus = statusFilter === 'all' || getUserStatus(user).status === statusFilter;
       
       return matchesSearch && matchesServer && matchesStatus;
     });
@@ -236,24 +239,24 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
       
       switch (sortField) {
         case 'email':
-          aValue = a.embyUser.email.toLowerCase();
-          bValue = b.embyUser.email.toLowerCase();
+          aValue = (a.embyUserEmail || '').toLowerCase();
+          bValue = (b.embyUserEmail || '').toLowerCase();
           break;
         case 'server':
-          aValue = (a.userServerLink?.server?.name || a.server?.name || '').toLowerCase();
-          bValue = (b.userServerLink?.server?.name || b.server?.name || '').toLowerCase();
+          aValue = (a.server?.name || '').toLowerCase();
+          bValue = (b.server?.name || '').toLowerCase();
           break;
         case 'expireAt':
-          aValue = a.userServerLink?.expireAt ? new Date(a.userServerLink.expireAt).getTime() : 0;
-          bValue = b.userServerLink?.expireAt ? new Date(b.userServerLink.expireAt).getTime() : 0;
+          aValue = a.expirationDate ? new Date(a.expirationDate).getTime() : 0;
+          bValue = b.expirationDate ? new Date(b.expirationDate).getTime() : 0;
           break;
         case 'status':
-          aValue = (a.userServerLink?.status || 'ACTIVE').toLowerCase();
-          bValue = (b.userServerLink?.status || 'ACTIVE').toLowerCase();
+          aValue = getUserStatus(a).status.toLowerCase();
+          bValue = getUserStatus(b).status.toLowerCase();
           break;
         case 'credits':
-          aValue = a.userServerLink?.creditsRemaining || 0;
-          bValue = b.userServerLink?.creditsRemaining || 0;
+          aValue = a.credits || 0;
+          bValue = b.credits || 0;
           break;
         default:
           return 0;
@@ -303,9 +306,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
 
   // Función para determinar el estado del usuario
   const getUserStatus = (user: User): { status: string; color: string; bgColor: string } => {
-    const creditsInfo = user.userServerLink;
-    
-    if (!creditsInfo?.expireAt) {
+    if (!user.expirationDate) {
       return { 
         status: 'SIN_FECHA', 
         color: 'text-gray-600 dark:text-gray-400', 
@@ -313,7 +314,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
       };
     }
     
-    const expireDate = new Date(creditsInfo.expireAt);
+    const expireDate = new Date(user.expirationDate);
     const now = new Date();
     const diffTime = expireDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -573,7 +574,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
         <div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</div>
           <div className="text-sm font-semibold text-gray-900 dark:text-white break-all">
-            {user.embyUser.email}
+            {user.embyUserEmail || 'Sin email'}
           </div>
         </div>
 
@@ -582,7 +583,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
           <div>
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Servidor</div>
             <div className="text-sm text-gray-900 dark:text-white">
-              {user.userServerLink?.server?.name || user.server?.name || 'N/A'}
+              {user.server?.name || 'N/A'}
             </div>
           </div>
                  <div>
@@ -605,13 +606,13 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
           <div>
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Expira</div>
             <div className="text-sm text-gray-900 dark:text-white">
-              {formatExpirationDate(user.userServerLink?.expireAt || null)}
+              {formatExpirationDate(user.expirationDate || null)}
             </div>
           </div>
           <div>
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Conexiones</div>
             <div className="text-sm text-gray-900 dark:text-white">
-              {user.userServerLink?.creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'}
+              {user.creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'}
             </div>
           </div>
         </div>
@@ -772,14 +773,14 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
                     <tr key={user.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${userStatus.bgColor}`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {user.embyUser.email}
+                        {user.embyUserEmail || 'Sin email'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                      {user.userServerLink?.server?.name || user.server?.name || 'N/A'}
+                      {user.server?.name || 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                      {formatExpirationDate(user.userServerLink?.expireAt || null)}
+                      {formatExpirationDate(user.expirationDate || null)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${userStatus.color} ${userStatus.bgColor}`}>
@@ -788,7 +789,7 @@ export function UsersTable({ users, servers, onEdit, onDelete, onRenew }: UsersT
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-white">
-                        {user.userServerLink?.creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'}
+                        {user.creditType === 'ONE_CONNECTION' ? '1 conexión' : '2 conexiones'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
