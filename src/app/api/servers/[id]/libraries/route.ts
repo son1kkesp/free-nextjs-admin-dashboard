@@ -3,10 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const server = await prisma.embyServer.findUnique({
       where: { id }
@@ -33,15 +33,11 @@ export async function GET(
             }
           },
           update: {
-            name: library.Name,
-            path: library.Path,
-            collectionType: library.CollectionType
+            name: library.Name
           },
           create: {
             embyId: library.Id,
             name: library.Name,
-            path: library.Path,
-            collectionType: library.CollectionType,
             serverId: id
           }
         });

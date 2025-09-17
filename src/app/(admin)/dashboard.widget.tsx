@@ -9,56 +9,21 @@ type Activity = {
   actor: { email: string };
 };
 
-interface DashboardStats {
+interface DashboardWidgetProps {
   serversCount: number;
   usersCount: number;
   demosCount: number;
-  totalCredits: number;
-  recentActivity: Activity[];
 }
 
-export default function DashboardWidget() {
+export default function DashboardWidget({ 
+  serversCount, 
+  usersCount, 
+  demosCount 
+}: DashboardWidgetProps) {
   const [activeTab, setActiveTab] = useState("overview");
-  const [stats, setStats] = useState<DashboardStats>({
-    serversCount: 0,
-    usersCount: 0,
-    demosCount: 0,
-    totalCredits: 0,
-    recentActivity: []
-  });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Fetch server stats
-        const serversResponse = await fetch('/api/servers/stats');
-        const serversData = await serversResponse.json();
-        
-        // Fetch users count
-        const usersResponse = await fetch('/api/server-users');
-        const usersData = await usersResponse.json();
-        
-        // Fetch demos count
-        const demosResponse = await fetch('/api/demos');
-        const demosData = await demosResponse.json();
-
-        setStats({
-          serversCount: serversData.overallStats?.activeServers || 0,
-          usersCount: Array.isArray(usersData) ? usersData.length : 0,
-          demosCount: Array.isArray(demosData) ? demosData.length : 0,
-          totalCredits: Array.isArray(usersData) ? usersData.reduce((sum: number, user: any) => sum + (user.credits || 0), 0) : 0,
-          recentActivity: [] // TODO: Implement activity tracking
-        });
-      } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
+  // No necesitamos fetch interno ya que recibimos los datos como props
 
   // Usar la función formatDate de date-utils para evitar errores de hidratación
 
@@ -110,7 +75,7 @@ export default function DashboardWidget() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Servidores Activos</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.serversCount}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{serversCount}</p>
                 </div>
                 <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
                   <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +89,7 @@ export default function DashboardWidget() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Usuarios Activos</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.usersCount}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{usersCount}</p>
                 </div>
                 <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
                   <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +103,7 @@ export default function DashboardWidget() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Demos Activas</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.demosCount}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{demosCount}</p>
                 </div>
                 <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
                   <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,7 +117,7 @@ export default function DashboardWidget() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Créditos Totales</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalCredits.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
                 <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
                   <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,33 +184,7 @@ export default function DashboardWidget() {
       {activeTab === "activity" && (
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actividad Reciente</h3>
-          {stats.recentActivity.length > 0 ? (
-            <div className="space-y-3">
-              {stats.recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full mr-3 ${activity.delta > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        {activity.delta > 0 ? '+' : ''}{activity.delta} créditos
-                      </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {activity.reason || 'Sin motivo especificado'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{activity.actor.email}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      {new Date(activity.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400 text-center py-8">No hay actividad reciente</p>
-          )}
+          <p className="text-gray-500 dark:text-gray-400 text-center py-8">Actividad reciente no implementada aún</p>
         </div>
       )}
     </div>

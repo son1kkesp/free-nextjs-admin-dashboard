@@ -11,7 +11,7 @@ import {
   EventContentArg,
 } from "@fullcalendar/core";
 import { useModal } from "@/hooks/useModal";
-import { Modal } from "@/components/ui/modal";
+import { Modal } from "@/components/ui/Modal";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
@@ -148,7 +148,7 @@ const Calendar: React.FC = () => {
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
-        className="max-w-[700px] p-6 lg:p-10"
+        title={selectedEvent ? "Edit Event" : "Add Event"}
       >
         <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
           <div>

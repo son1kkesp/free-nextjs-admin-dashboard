@@ -67,7 +67,7 @@ export default function LibraryManager({ libraries, onLibrariesChange }: Library
               <Input
                 id="libraryName"
                 type="text"
-                value={newLibrary.name}
+                defaultValue={newLibrary.name}
                 onChange={(e) => setNewLibrary({ ...newLibrary, name: e.target.value })}
                 placeholder="Ej: Películas HD"
                 className="rounded-xl border-gray-200 bg-white shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:focus:border-blue-400"
@@ -80,7 +80,7 @@ export default function LibraryManager({ libraries, onLibrariesChange }: Library
               <Input
                 id="libraryId"
                 type="text"
-                value={newLibrary.embyId}
+                defaultValue={newLibrary.embyId}
                 onChange={(e) => setNewLibrary({ ...newLibrary, embyId: e.target.value })}
                 placeholder="Ej: 12345"
                 className="rounded-xl border-gray-200 bg-white shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:focus:border-blue-400"
@@ -88,7 +88,6 @@ export default function LibraryManager({ libraries, onLibrariesChange }: Library
             </div>
           </div>
           <Button
-            type="button"
             onClick={addLibrary}
             className="w-full rounded-xl bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-green-700 hover:to-blue-700 hover:shadow-xl"
             startIcon={<PlusIcon />}
@@ -131,7 +130,6 @@ export default function LibraryManager({ libraries, onLibrariesChange }: Library
                   </div>
                 </div>
                 <Button
-                  type="button"
                   onClick={() => removeLibrary(index)}
                   className="opacity-0 transition-all duration-200 group-hover:opacity-100 rounded-full p-2 text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                 >

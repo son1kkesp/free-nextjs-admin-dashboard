@@ -2,7 +2,7 @@
 import React from "react";
 import ComponentCard from "../../common/ComponentCard";
 
-import { Modal } from "../../ui/modal";
+import { Modal } from "../../ui/Modal";
 import Button from "../../ui/button/Button";
 import { useModal } from "@/hooks/useModal";
 
@@ -22,11 +22,9 @@ export default function DefaultModal() {
         <Modal
           isOpen={isOpen}
           onClose={closeModal}
-          className="max-w-[600px] p-5 lg:p-10"
+          title="Modal Heading"
+          size="lg"
         >
-          <h4 className="font-semibold text-gray-800 mb-7 text-title-sm dark:text-white/90">
-            Modal Heading
-          </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Pellentesque euismod est quis mauris lacinia pharetra. Sed a ligula

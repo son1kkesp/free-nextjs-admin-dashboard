@@ -3,23 +3,19 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const demo = await prisma.demo.findUnique({
       where: { id },
       include: {
-        userServerLink: {
-          include: {
-            server: {
-              select: {
-                name: true,
-                url: true,
-                apiKey: true
-              }
-            }
+        server: {
+          select: {
+            name: true,
+            url: true,
+            apiKey: true
           }
         }
       }
@@ -40,7 +36,7 @@ export async function GET(
       email: demo.email,
       password: demo.password,
       embyUserName: demo.embyUserName,
-      serverName: demo.userServerLink?.server.name || 'Servidor no encontrado',
+      serverName: demo.server?.name || 'Servidor no encontrado',
       hoursDuration: demo.hoursDuration,
       expirationDate: demo.expirationDate,
       isActive: demo.isActive && !isExpired,
@@ -61,25 +57,21 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { email, password, hoursDuration, isActive } = body;
 
     const demo = await prisma.demo.findUnique({
       where: { id },
       include: {
-        userServerLink: {
-          include: {
-            server: true
-          }
-        }
+        server: true
       }
     });
 
-    if (!demo || !demo.userServerLink) {
+    if (!demo) {
       return NextResponse.json({ message: "Demo no encontrada" }, { status: 404 });
     }
 
@@ -87,8 +79,8 @@ export async function PUT(
     if (email || password) {
       const { EmbyService } = await import("@/lib/emby");
       const embyService = new EmbyService(
-        demo.userServerLink.server.apiKey,
-        demo.userServerLink.server.url
+        demo.server.apiKey,
+        demo.server.url
       );
 
       try {
@@ -137,15 +129,15 @@ export async function PUT(
       }
     });
 
-    // Update UserServerLink expiration date if changed
-    if (newExpirationDate !== demo.expirationDate) {
-      await prisma.userServerLink.update({
-        where: { id: demo.userServerLink.id },
-        data: {
-          expirationDate: newExpirationDate
-        }
-      });
-    }
+    // TODO: Update UserServerLink expiration date when implemented
+    // if (newExpirationDate !== demo.expirationDate) {
+    //   await prisma.userServerLink.update({
+    //     where: { id: demo.userServerLink.id },
+    //     data: {
+    //       expirationDate: newExpirationDate
+    //     }
+    //   });
+    // }
 
     return NextResponse.json({ 
       message: "Demo actualizada exitosamente",
@@ -159,31 +151,27 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const demo = await prisma.demo.findUnique({
       where: { id },
       include: {
-        userServerLink: {
-          include: {
-            server: true
-          }
-        }
+        server: true
       }
     });
 
-    if (!demo || !demo.userServerLink) {
+    if (!demo) {
       return NextResponse.json({ message: "Demo no encontrada" }, { status: 404 });
     }
 
     // Delete from Emby server
     const { EmbyService } = await import("@/lib/emby");
     const embyService = new EmbyService(
-      demo.userServerLink.server.apiKey,
-      demo.userServerLink.server.url
+      demo.server.apiKey,
+      demo.server.url
     );
 
     try {
@@ -203,10 +191,10 @@ export async function DELETE(
       // Continue with database deletion even if Emby deletion fails
     }
 
-    // Delete related records from database
-    await prisma.userServerLink.delete({
-      where: { id: demo.userServerLink.id }
-    });
+    // TODO: Delete UserServerLink when implemented
+    // await prisma.userServerLink.delete({
+    //   where: { id: demo.userServerLink.id }
+    // });
 
     await prisma.demo.delete({
       where: { id }

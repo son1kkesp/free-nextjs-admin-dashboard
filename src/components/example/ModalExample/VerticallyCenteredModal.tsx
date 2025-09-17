@@ -2,7 +2,7 @@
 import React from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
-import { Modal } from "../../ui/modal";
+import { Modal } from "../../ui/Modal";
 import { useModal } from "@/hooks/useModal";
 
 export default function VerticallyCenteredModal() {
@@ -20,13 +20,11 @@ export default function VerticallyCenteredModal() {
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
-        showCloseButton={false}
-        className="max-w-[507px] p-6 lg:p-10"
+        title="All Done! Success Confirmed"
+        variant="success"
+        size="md"
       >
         <div className="text-center">
-          <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-            All Done! Success Confirmed
-          </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Pellentesque euismod est quis mauris lacinia pharetra.

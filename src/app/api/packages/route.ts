@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
           include: {
             library: {
               select: {
+                id: true,
                 name: true,
                 embyId: true
               }
@@ -110,6 +111,7 @@ export async function POST(request: NextRequest) {
           include: {
             library: {
               select: {
+                id: true,
                 name: true,
                 embyId: true
               }

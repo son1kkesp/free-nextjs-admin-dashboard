@@ -35,6 +35,7 @@ interface Server {
   id: string;
   name: string;
   url: string;
+  maxUsers?: number;
 }
 
 interface Package {
@@ -601,7 +602,7 @@ export default function ServerUsersWidget({ serverUsers, servers, packages }: Se
             <p className="text-sm text-blue-700 dark:text-blue-300">
               {calculateExpirationDate() ? (
                 <>
-                  <strong>{calculateExpirationDate() ? formatDate(calculateExpirationDate()) : 'N/A'}</strong> a las{' '}
+                  <strong>{calculateExpirationDate() ? formatDate(calculateExpirationDate()!) : 'N/A'}</strong> a las{' '}
                   <strong>{calculateExpirationDate()?.toLocaleTimeString()}</strong>
                   <br />
                   <span className="text-xs">

@@ -2,7 +2,7 @@
 import React from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
-import { Modal } from "../../ui/modal";
+import { Modal } from "../../ui/Modal";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
@@ -22,12 +22,10 @@ export default function FormInModal() {
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
-        className="max-w-[584px] p-5 lg:p-10"
+        title="Personal Information"
+        size="lg"
       >
         <form className="">
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Personal Information
-          </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">

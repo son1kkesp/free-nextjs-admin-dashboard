@@ -157,7 +157,6 @@ export default function EmbyLibraryManager({
       {/* Botón para recargar librerías */}
       <div className="flex justify-center">
         <Button
-          type="button"
           onClick={loadEmbyLibraries}
           disabled={loading}
           variant="outline"
@@ -287,7 +286,6 @@ export default function EmbyLibraryManager({
                   </div>
                 </div>
                 <Button
-                  type="button"
                   onClick={() => removeLibrary(library.embyId)}
                   className="opacity-0 transition-all duration-200 group-hover:opacity-100 rounded-full p-2 text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                 >

@@ -10,8 +10,6 @@ import ComponentCard from "@/components/common/ComponentCard";
 interface User {
   id: string;
   email: string;
-  name: string | null;
-  defaultDomain: string | null;
   role: string;
 }
 
@@ -20,7 +18,7 @@ interface SettingsWidgetProps {
 }
 
 export default function SettingsWidget({ user }: SettingsWidgetProps) {
-  const [defaultDomain, setDefaultDomain] = useState(user.defaultDomain || "");
+  const [defaultDomain, setDefaultDomain] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSaveDomain = async () => {
@@ -98,10 +96,7 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Configuración de Dominio */}
-        <ComponentCard className="p-6">
-          <h3 className="mb-4 text-lg font-semibold text-black dark:text-white">
-            Configuración de Dominio
-          </h3>
+        <ComponentCard title="Configuración de Dominio" className="p-6">
           <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
             Configura el dominio por defecto para las cuentas que crees. Todas las cuentas nuevas usarán este dominio.
           </p>
@@ -113,7 +108,7 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
                 id="defaultDomain"
                 type="text"
                 placeholder="ejemplo.com"
-                value={defaultDomain}
+                defaultValue={defaultDomain}
                 onChange={(e) => setDefaultDomain(e.target.value)}
                 className="mt-1"
               />
@@ -133,10 +128,7 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
         </ComponentCard>
 
         {/* Generador de Cuentas */}
-        <ComponentCard className="p-6">
-          <h3 className="mb-4 text-lg font-semibold text-black dark:text-white">
-            Generador de Cuentas
-          </h3>
+        <ComponentCard title="Generador de Cuentas" className="p-6">
           <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
             Genera emails y contraseñas aleatorios para crear cuentas rápidamente.
           </p>
@@ -148,8 +140,8 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
                 <Input
                   id="randomEmail"
                   type="text"
-                  value={randomEmail}
-                  readOnly
+                  defaultValue={randomEmail}
+                  disabled={true}
                   className="flex-1"
                 />
                 <Button
@@ -168,8 +160,8 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
                 <Input
                   id="randomPassword"
                   type="text"
-                  value={randomPassword}
-                  readOnly
+                  defaultValue={randomPassword}
+                  disabled={true}
                   className="flex-1"
                 />
                 <Button
@@ -192,10 +184,7 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
       </div>
 
       {/* Información del Usuario */}
-      <ComponentCard className="mt-6 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-black dark:text-white">
-          Información de la Cuenta
-        </h3>
+      <ComponentCard title="Información de la Cuenta" className="mt-6 p-6">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <Label>Email de la cuenta</Label>
@@ -203,7 +192,7 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
           </div>
           <div>
             <Label>Nombre</Label>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{user.name || "No especificado"}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Administrador</p>
           </div>
           <div>
             <Label>Rol</Label>
@@ -212,7 +201,7 @@ export default function SettingsWidget({ user }: SettingsWidgetProps) {
           <div>
             <Label>Dominio actual</Label>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {user.defaultDomain || "No configurado"}
+              {"No configurado"}
             </p>
           </div>
         </div>

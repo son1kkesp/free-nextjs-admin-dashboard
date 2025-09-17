@@ -23,25 +23,20 @@ import DemoCard from "@/components/cards/DemoCard";
 
 interface Demo {
   id: string;
-  embyUserId: string;
-  embyUsername: string;
+  email: string;
+  password: string;
+  embyUserName: string;
+  serverId: string;
+  hoursDuration: number;
+  expirationDate: Date;
+  isActive: boolean;
   createdAt: Date;
-  embyUser: {
-    id: string;
-    email: string;
-    name: string | null;
-  };
+  updatedAt: Date;
   server: {
     id: string;
     name: string;
-    baseUrl: string;
-  };
-  userServerLink?: {
-    id: string;
-    demoHours: number | null;
-    isDemo: boolean;
-    expireAt: Date | null;
-    createdAt: Date;
+    url: string;
+    maxUsers: number;
   };
 }
 
@@ -49,6 +44,7 @@ interface Server {
   id: string;
   name: string;
   baseUrl: string;
+  maxUsers?: number;
 }
 
 interface Package {
@@ -133,7 +129,7 @@ export default function DemosWidget({ demos, servers, packages }: DemosWidgetPro
   const handleEditDemo = (demo: Demo) => {
     setSelectedDemo(demo);
     setFormData({
-      email: demo.embyUser.email,
+      email: demo.email,
       password: "",
       serverId: demo.server.id,
       packageId: "",
@@ -286,13 +282,13 @@ export default function DemosWidget({ demos, servers, packages }: DemosWidgetPro
   ];
 
 
-  const handleDeleteDemo = async (demoId: string) => {
+  const handleDeleteDemo = async (demo: Demo) => {
     if (!confirm("¿Estás seguro de que quieres eliminar esta demo?")) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/server-users/${demoId}`, {
+      const response = await fetch(`/api/server-users/${demo.id}`, {
         method: "DELETE",
       });
 
@@ -310,7 +306,7 @@ export default function DemosWidget({ demos, servers, packages }: DemosWidgetPro
 
   const handleConvertToUser = (demo: Demo) => {
     // Validar que la demo tenga los datos necesarios
-    if (!demo || !demo.embyUser || !demo.embyUser.email) {
+    if (!demo || !demo.email) {
       console.error('Demo data is incomplete:', demo);
       alert('Error: Los datos de la demo están incompletos');
       return;
@@ -329,8 +325,8 @@ export default function DemosWidget({ demos, servers, packages }: DemosWidgetPro
     const csvContent = [
       ["Email", "Usuario Emby", "Servidor", "Creado", "Tipo"],
       ...demos.map(demo => [
-        demo.embyUser.email,
-        demo.embyUsername,
+        demo.email,
+        demo.embyUserName,
         demo.server.name,
         formatDate(demo.createdAt),
         "Demo",
@@ -424,10 +420,9 @@ export default function DemosWidget({ demos, servers, packages }: DemosWidgetPro
               <DemoCard
                 key={demo.id}
                 demo={demo}
-                onEdit={handleEditDemo}
                 onConvert={handleConvertToUser}
                 onDelete={handleDeleteDemo}
-                isMobile={false}
+                onView={handleEditDemo}
               />
             ))}
           </div>
@@ -456,7 +451,12 @@ export default function DemosWidget({ demos, servers, packages }: DemosWidgetPro
           setConvertModalOpen(false);
           setSelectedDemo(null);
         }}
-        demo={selectedDemo}
+        demo={selectedDemo ? {
+          id: selectedDemo.id,
+          embyUser: {
+            email: selectedDemo.email
+          }
+        } : null}
         onSuccess={handleConvertSuccess}
       />
     </div>

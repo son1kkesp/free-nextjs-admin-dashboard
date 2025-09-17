@@ -174,71 +174,12 @@ interface EmbyLibrary {
   }>;
   ProviderIds: Record<string, string>;
   IsHD: boolean;
-  IsFolder: boolean;
-  ParentId?: string;
-  Type: string;
   People: Array<{
     Name: string;
     Id: string;
     Role?: string;
     Type: string;
     PrimaryImageTag?: string;
-  }>;
-  Studios: Array<{
-    Name: string;
-    Id: string;
-  }>;
-  GenreItems: Array<{
-    Name: string;
-    Id: string;
-  }>;
-  ParentLogoItemId?: string;
-  ParentBackdropItemId?: string;
-  ParentBackdropImageTags: string[];
-  LocalTrailerCount: number;
-  UserData: {
-    Rating: number;
-    PlayedPercentage: number;
-    UnplayedItemCount: number;
-    PlaybackPositionTicks: number;
-    PlayCount: number;
-    IsFavorite: boolean;
-    LastPlayedDate?: string;
-    Played: boolean;
-    Key?: string;
-    ItemId: string;
-  };
-  RecursiveItemCount: number;
-  ChildCount: number;
-  SeriesName?: string;
-  SeriesId?: string;
-  SeasonId?: string;
-  SpecialFeatureCount: number;
-  DisplayPreferencesId: string;
-  Status: string;
-  AirTime?: string;
-  AirDays: string[];
-  IndexNumber?: number;
-  ParentIndexNumber?: number;
-  RemoteTrailers: Array<{
-    Url: string;
-    Name: string;
-  }>;
-  ProviderIds: Record<string, string>;
-  IsHD: boolean;
-  IsFolder: boolean;
-  ParentId?: string;
-  Type: string;
-  People: Array<{
-    Name: string;
-    Id: string;
-    Role?: string;
-    Type: string;
-    PrimaryImageTag?: string;
-  }>;
-  Studios: Array<{
-    Name: string;
-    Id: string;
   }>;
   GenreItems: Array<{
     Name: string;
@@ -392,8 +333,7 @@ export class EmbyService {
 
   // Set user password
   async setUserPassword(userId: string, newPassword: string): Promise<void> {
-    const userData = { NewPassword: newPassword };
-    return this.updateUser(userId, userData);
+    return this.makeRequest(`/Users/${userId}/Password`, 'POST', { NewPassword: newPassword });
   }
 }
 

@@ -142,26 +142,20 @@ export default function FormModal({
                   {field.type === "select" ? (
                     <div className="flex gap-2">
                       <Select
-                        id={field.id}
-                        value={field.value}
+                        defaultValue={field.value}
                         onChange={field.onChange}
                         options={field.options || []}
-                        required={field.required}
                         className={`flex-1 ${field.icon ? "pl-10" : ""}`}
-                        showPlaceholder={false}
+                        placeholder={field.placeholder || "Seleccionar..."}
                       />
                       {field.generateButton && (
                         <Button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            field.generateButton.onClick();
+                          onClick={() => {
+                            field.generateButton?.onClick();
                           }}
                           variant="outline"
                           size="sm"
                           className="px-3"
-                          title={field.generateButton.label || "Generar"}
                         >
                           🎯
                         </Button>
@@ -183,10 +177,9 @@ export default function FormModal({
                         <Input
                           id={field.id}
                           type={showPasswords[field.id] ? "text" : "password"}
-                          value={field.value}
+                          defaultValue={field.value}
                           onChange={(e) => field.onChange(e.target.value)}
                           placeholder={field.placeholder}
-                          required={field.required}
                           className={`${field.icon ? "pl-10" : ""} pr-10`}
                         />
                         <button
@@ -208,16 +201,12 @@ export default function FormModal({
                       </div>
                       {field.generateButton && (
                         <Button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            field.generateButton.onClick();
+                          onClick={() => {
+                            field.generateButton?.onClick();
                           }}
                           variant="outline"
                           size="sm"
                           className="px-3"
-                          title={field.generateButton.label || "Generar"}
                         >
                           🎲
                         </Button>
@@ -228,24 +217,19 @@ export default function FormModal({
                       <Input
                         id={field.id}
                         type={field.type}
-                        value={field.value}
+                        defaultValue={field.value}
                         onChange={(e) => field.onChange(e.target.value)}
                         placeholder={field.placeholder}
-                        required={field.required}
                         className={`flex-1 ${field.icon ? "pl-10" : ""} ${field.generateButton ? "pr-12" : ""}`}
                       />
                       {field.generateButton && (
                         <Button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            field.generateButton.onClick();
+                          onClick={() => {
+                            field.generateButton?.onClick();
                           }}
                           variant="outline"
                           size="sm"
                           className="px-3"
-                          title={field.generateButton.label || "Generar"}
                         >
                           🎲
                         </Button>

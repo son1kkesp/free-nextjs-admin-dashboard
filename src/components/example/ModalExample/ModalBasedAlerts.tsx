@@ -2,7 +2,7 @@
 import React from "react";
 import ComponentCard from "../../common/ComponentCard";
 
-import { Modal } from "../../ui/modal";
+import { Modal } from "../../ui/Modal";
 import { useModal } from "@/hooks/useModal";
 
 export default function ModalBasedAlerts() {
@@ -42,7 +42,9 @@ export default function ModalBasedAlerts() {
       <Modal
         isOpen={successModal.isOpen}
         onClose={successModal.closeModal}
-        className="max-w-[600px] p-5 lg:p-10"
+        title="Success Alert"
+        variant="success"
+        size="lg"
       >
         <div className="text-center">
           <div className="relative flex items-center justify-center z-1 mb-7">
@@ -79,9 +81,6 @@ export default function ModalBasedAlerts() {
               </svg>
             </span>
           </div>
-          <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-            Well Done!
-          </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet consectetur. Feugiat ipsum libero tempor
             felis risus nisi non. Quisque eu ut tempor curabitur.
@@ -101,7 +100,9 @@ export default function ModalBasedAlerts() {
       <Modal
         isOpen={infoModal.isOpen}
         onClose={infoModal.closeModal}
-        className="max-w-[600px] p-5 lg:p-10"
+        title="Information Alert"
+        variant="info"
+        size="lg"
       >
         <div className="text-center">
           <div className="relative flex items-center justify-center z-1 mb-7">
@@ -139,9 +140,6 @@ export default function ModalBasedAlerts() {
             </span>
           </div>
 
-          <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-            Information Alert!
-          </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet consectetur. Feugiat ipsum libero tempor
             felis risus nisi non. Quisque eu ut tempor curabitur.
@@ -161,7 +159,9 @@ export default function ModalBasedAlerts() {
       <Modal
         isOpen={warningModal.isOpen}
         onClose={warningModal.closeModal}
-        className="max-w-[600px] p-5 lg:p-10"
+        title="Warning Alert"
+        variant="warning"
+        size="lg"
       >
         <div className="text-center">
           <div className="relative flex items-center justify-center z-1 mb-7">
@@ -199,9 +199,6 @@ export default function ModalBasedAlerts() {
             </span>
           </div>
 
-          <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-            Warning Alert!
-          </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet consectetur. Feugiat ipsum libero tempor
             felis risus nisi non. Quisque eu ut tempor curabitur.
@@ -221,7 +218,9 @@ export default function ModalBasedAlerts() {
       <Modal
         isOpen={errorModal.isOpen}
         onClose={errorModal.closeModal}
-        className="max-w-[600px] p-5 lg:p-10"
+        title="Danger Alert"
+        variant="primary"
+        size="lg"
       >
         <div className="text-center">
           <div className="relative flex items-center justify-center z-1 mb-7">
@@ -259,9 +258,6 @@ export default function ModalBasedAlerts() {
             </span>
           </div>
 
-          <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-            Danger Alert!
-          </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet consectetur. Feugiat ipsum libero tempor
             felis risus nisi non. Quisque eu ut tempor curabitur.

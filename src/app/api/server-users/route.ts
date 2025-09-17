@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
       const now = new Date();
       let userStatus = 'ACTIVO';
       
-      if (!user.embyAccount?.isActive) {
+      if (!user.isDemo) {
         userStatus = 'INACTIVO';
       } else if (user.expirationDate) {
         if (user.expirationDate < now) {
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
         serverName: user.server.name,
         status: userStatus,
         expirationDate: user.expirationDate,
-        creditType: user.connectionType,
+        creditType: user.creditType,
         credits: user.credits,
         createdAt: user.createdAt,
         createdBy: 'Sistema', // TODO: Get actual user email when auth is implemented

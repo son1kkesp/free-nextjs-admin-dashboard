@@ -36,17 +36,48 @@ export default async function DemosPage() {
       id: true,
       name: true,
       description: true,
+      libraries: {
+        select: {
+          id: true,
+          libraryId: true,
+          library: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       name: "asc",
     },
   });
 
+  // Transformar servidores para que coincidan con el tipo esperado
+  const transformedServers = servers.map(server => ({
+    id: server.id,
+    name: server.name,
+    baseUrl: server.url,
+    maxUsers: server.maxUsers,
+  }));
+
+  // Transformar paquetes para que coincidan con el tipo esperado
+  const transformedPackages = packages.map(pkg => ({
+    id: pkg.id,
+    name: pkg.name,
+    description: pkg.description,
+    libraries: pkg.libraries.map(lib => ({
+      id: lib.id,
+      libraryId: lib.libraryId,
+      libraryName: lib.library?.name || null,
+    })),
+  }));
+
   return (
     <DemosWidget 
       demos={demos} 
-      servers={servers}
-      packages={packages}
+      servers={transformedServers}
+      packages={transformedPackages}
     />
   );
 }

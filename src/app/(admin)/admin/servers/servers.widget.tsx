@@ -19,6 +19,7 @@ interface Server {
   name: string;
   baseUrl: string;
   apiKey: string;
+  maxUsers: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -353,7 +354,6 @@ export default function ServersWidget({ servers }: ServersWidgetProps) {
           </div>
           <div className="flex gap-2">
             <Button
-              type="button"
               onClick={testConnection}
               disabled={testing}
               className="flex-1 rounded-xl bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-green-700 hover:to-blue-700 hover:shadow-xl disabled:opacity-50"
