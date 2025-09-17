@@ -8,7 +8,8 @@ interface RenewUserModalProps {
   onClose: () => void;
   user: {
     id: string;
-    embyUserEmail: string;
+    embyUserEmail?: string;
+    embyUserName?: string;
     expirationDate: Date | null;
     creditsAllocated?: number;
     creditsRemaining?: number;
@@ -23,7 +24,7 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
   const [isLoading, setIsLoading] = useState(false);
   const { success, error } = useToastContext();
 
-  if (!isOpen || !user || !user.embyUserEmail) {
+  if (!isOpen || !user) {
     return null;
   }
 
@@ -46,7 +47,8 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
       });
 
       if (response.ok) {
-        success("Éxito", `Usuario ${user.embyUserEmail} renovado exitosamente.`);
+        const userIdentifier = user.embyUserEmail || user.embyUserName || `ID: ${user.id}`;
+        success("Éxito", `Usuario ${userIdentifier} renovado exitosamente.`);
         onSuccess();
         onClose();
       } else {
@@ -107,9 +109,23 @@ export function RenewUserModal({ isOpen, onClose, user, onSuccess }: RenewUserMo
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                     Usuario a renovar:
                   </p>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {user.embyUserEmail}
-                  </p>
+                  <div className="space-y-1">
+                    {user.embyUserEmail && (
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        Email: {user.embyUserEmail}
+                      </p>
+                    )}
+                    {user.embyUserName && (
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        Nombre: {user.embyUserName}
+                      </p>
+                    )}
+                    {!user.embyUserEmail && !user.embyUserName && (
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        ID: {user.id}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
