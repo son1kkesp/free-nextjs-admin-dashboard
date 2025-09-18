@@ -70,6 +70,7 @@ function getSuperAdminNavigation(): NavigationItem[] {
       icon: 'users',
       children: [
         { label: 'Gestión de Usuarios', href: '/users', permission: 'users:read' },
+        { label: 'Usuarios Emby', href: '/emby-users', permission: 'users:read' },
         { label: 'Gestión de Resellers', href: '/users/resellers', permission: 'users:manage' },
         { label: 'Permisos y Roles', href: '/users/permissions', permission: 'users:manage' }
       ]
@@ -135,7 +136,10 @@ function getTechAdminNavigation(): NavigationItem[] {
       label: 'Usuarios de Prueba',
       href: '/users',
       icon: 'users',
-      permission: 'users:read'
+      children: [
+        { label: 'Gestión de Usuarios', href: '/users', permission: 'users:read' },
+        { label: 'Usuarios Emby', href: '/emby-users', permission: 'users:read' }
+      ]
     },
     {
       label: 'Servidores de Prueba',
