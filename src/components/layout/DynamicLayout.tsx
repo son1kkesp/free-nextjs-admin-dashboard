@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { usePermissions } from "@/hooks/usePermissions"
 import AdminLayout from "./AdminLayout"
@@ -14,40 +14,34 @@ interface DynamicLayoutProps {
 export default function DynamicLayout({ children }: DynamicLayoutProps) {
   const pathname = usePathname()
   const { isSuperAdmin, isTechAdmin } = usePermissions()
-  const [is404Page, setIs404Page] = useState(false)
 
-  // Detectar si estamos en una página 404
-  useEffect(() => {
-    if (pathname) {
-      // Lista de rutas válidas del sistema
-      const validRoutes = [
-        '/',
-        '/auth',
-        '/error',
-        '/404',
-        '/500',
-        '/users',
-        '/servers',
-        '/demos',
-        '/packages',
-        '/policies',
-        '/settings',
-        '/resellers',
-        '/my-users',
-        '/dev',
-        '/api'
-      ]
-      
-      // Verificar si la ruta actual es válida
-      const isValidRoute = validRoutes.some(route => {
-        if (route === '/') return pathname === '/'
-        if (route === '/api') return pathname.startsWith('/api')
-        return pathname.startsWith(route)
-      })
-      
-      setIs404Page(!isValidRoute)
-    }
-  }, [pathname])
+  // Función para verificar si una ruta es válida
+  const isValidRoute = (path: string) => {
+    // Lista de rutas válidas del sistema
+    const validRoutes = [
+      '/',
+      '/auth',
+      '/error',
+      '/404',
+      '/500',
+      '/users',
+      '/servers',
+      '/demos',
+      '/packages',
+      '/policies',
+      '/settings',
+      '/resellers',
+      '/my-users',
+      '/dev',
+      '/api'
+    ]
+    
+    return validRoutes.some(route => {
+      if (route === '/') return path === '/'
+      if (route === '/api') return path.startsWith('/api')
+      return path.startsWith(route)
+    })
+  }
 
   // Si estamos en páginas de autenticación, no aplicar layout
   if (pathname?.startsWith('/auth')) {
@@ -59,8 +53,8 @@ export default function DynamicLayout({ children }: DynamicLayoutProps) {
     return <>{children}</>
   }
 
-  // Si detectamos que es una página 404, no aplicar layout
-  if (is404Page) {
+  // Si la ruta no es válida, no aplicar layout (página 404)
+  if (pathname && !isValidRoute(pathname)) {
     return <>{children}</>
   }
 
