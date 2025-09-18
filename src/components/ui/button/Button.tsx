@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode } from "react";
 
 interface ButtonProps {
   children: ReactNode; // Button text or content
@@ -23,12 +23,6 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   type = "button",
 }) => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   // Size Classes
   const sizeClasses = {
     sm: "px-4 py-3 text-sm",
@@ -43,18 +37,15 @@ const Button: React.FC<ButtonProps> = ({
       "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
   };
 
-  // Para evitar problemas de hidratación, usar type="button" en el servidor
-  const buttonType = isClient ? type : "button";
-
   return (
     <button
-      type={buttonType}
+      type={type}
       className={`inline-flex items-center justify-center font-medium gap-2 rounded-lg transition ${className} ${
         sizeClasses[size]
       } ${variantClasses[variant]} ${
         disabled ? "cursor-not-allowed opacity-50" : ""
       }`}
-      onClick={buttonType === "submit" ? undefined : onClick}
+      onClick={onClick}
       disabled={disabled}
     >
       {startIcon && <span className="flex items-center">{startIcon}</span>}
