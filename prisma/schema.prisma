@@ -28,6 +28,12 @@ model User {
   packages       Package[]
   policies       Policy[]
 
+  // Índices para optimización
+  @@index([role])
+  @@index([isActive])
+  @@index([isTest])
+  @@index([createdBy])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -50,6 +56,11 @@ model EmbyServer {
   libraries   Library[]
   demos       Demo[]
 
+  // Índices para optimización
+  @@index([isActive])
+  @@index([isTest])
+  @@index([userId])
+  @@index([createdAt])
   @@map("emby_servers")
 }
 
@@ -78,13 +89,21 @@ model UserServerLink {
   expirationDate  DateTime?
   creditType      CreditType @default(ONE_CONNECTION)
   credits         Int      @default(0)
+  isActive        Boolean  @default(true)
+  embyUserEmail   String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   // Relaciones
   server          EmbyServer @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
+  // Índices para optimización
   @@unique([userId, serverId])
+  @@index([serverId])
+  @@index([isDemo])
+  @@index([isActive])
+  @@index([expirationDate])
+  @@index([createdAt])
   @@map("user_server_links")
 }
 
@@ -105,6 +124,11 @@ model Demo {
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   server          EmbyServer @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
+  // Índices para optimización
+  @@index([serverId])
+  @@index([isActive])
+  @@index([expirationDate])
+  @@index([createdAt])
   @@map("demos")
 }
 
