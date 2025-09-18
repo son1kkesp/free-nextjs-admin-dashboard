@@ -16,11 +16,17 @@ import {
  * Hook para manejar permisos en el frontend
  */
 export function usePermissions() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+
+  console.log('🔍 usePermissions - Session status:', status);
+  console.log('🔍 usePermissions - Session data:', session);
 
   // Construir objeto de permisos del usuario
   const userPermissions = useMemo((): UserPermissions | null => {
-    if (!session?.user) return null
+    if (!session?.user) {
+      console.log('🔍 usePermissions - No session or user found');
+      return null
+    }
 
     console.log('🔍 usePermissions - Session user:', session.user);
     console.log('🔍 usePermissions - Role:', session.user.role);

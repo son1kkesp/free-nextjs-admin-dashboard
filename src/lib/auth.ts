@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
-  // adapter: PrismaAdapter(prisma), // Comentado temporalmente para debug
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -70,6 +70,10 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
         session.user.isActive = token.isActive as boolean
         session.user.email = token.email as string
+        
+        console.log('🔍 Session Callback - Updated session:', session);
+      } else {
+        console.log('🔍 Session Callback - No token found');
       }
       return session
     }

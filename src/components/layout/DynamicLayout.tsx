@@ -15,6 +15,7 @@ export default function DynamicLayout({ children }: DynamicLayoutProps) {
   const pathname = usePathname()
   const { isSuperAdmin, isTechAdmin, userPermissions } = usePermissions()
 
+  console.log('🔍 DynamicLayout - pathname:', pathname);
   console.log('🔍 DynamicLayout - userPermissions:', userPermissions);
   console.log('🔍 DynamicLayout - isSuperAdmin:', isSuperAdmin());
   console.log('🔍 DynamicLayout - isTechAdmin:', isTechAdmin());
