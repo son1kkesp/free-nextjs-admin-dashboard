@@ -1,6 +1,5 @@
 "use client"
 
-import { SessionProvider as NextAuthSessionProvider } from "next-auth/react"
 import { ReactNode } from "react"
 
 interface SessionProviderProps {
@@ -8,9 +7,7 @@ interface SessionProviderProps {
 }
 
 export default function SessionProvider({ children }: SessionProviderProps) {
-  return (
-    <NextAuthSessionProvider>
-      {children}
-    </NextAuthSessionProvider>
-  )
+  // Ya no necesitamos NextAuth SessionProvider
+  // Nuestro hook useAuth maneja la sesión directamente
+  return <>{children}</>
 }

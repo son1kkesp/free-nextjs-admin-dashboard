@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
   // Optimizaciones de rendimiento
-  swcMinify: true,
+  // swcMinify está habilitado por defecto en Next.js 15+
   compress: true,
   poweredByHeader: false,
   generateEtags: false,

@@ -2,14 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import LogoutButton from "../auth/LogoutButton";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: session } = useSession();
+  const { session } = useAuth();
 
 function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
   e.stopPropagation();

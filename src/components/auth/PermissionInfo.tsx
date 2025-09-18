@@ -14,21 +14,18 @@ interface PermissionInfoProps {
 export default function PermissionInfo({ showDetails = false, className = "" }: PermissionInfoProps) {
   const { 
     userPermissions, 
-    isAdmin, 
     isSuperAdmin, 
     isTechAdmin,
-    canManageUsers,
-    canManageServers,
-    canExecuteJobs,
-    canViewAudit,
-    getAllPermissions
+    hasPermission
   } = usePermissions()
 
   if (!userPermissions) {
-    return null
+    return (
+      <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 ${className}`}>
+        <p className="text-sm text-gray-500">No hay permisos disponibles</p>
+      </div>
+    )
   }
-
-  const permissions = getAllPermissions()
 
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 ${className}`}>
@@ -48,22 +45,22 @@ export default function PermissionInfo({ showDetails = false, className = "" }: 
         {/* Indicadores de permisos principales */}
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${canManageUsers() ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+            <div className={`h-2 w-2 rounded-full ${hasPermission('users:write') ? 'bg-green-500' : 'bg-gray-300'}`}></div>
             <span className="text-gray-600 dark:text-gray-400">Gestionar Usuarios</span>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${canManageServers() ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+            <div className={`h-2 w-2 rounded-full ${hasPermission('servers:write') ? 'bg-green-500' : 'bg-gray-300'}`}></div>
             <span className="text-gray-600 dark:text-gray-400">Gestionar Servidores</span>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${canExecuteJobs() ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+            <div className={`h-2 w-2 rounded-full ${hasPermission('jobs:execute') ? 'bg-green-500' : 'bg-gray-300'}`}></div>
             <span className="text-gray-600 dark:text-gray-400">Ejecutar Jobs</span>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${canViewAudit() ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+            <div className={`h-2 w-2 rounded-full ${hasPermission('logs:read') ? 'bg-green-500' : 'bg-gray-300'}`}></div>
             <span className="text-gray-600 dark:text-gray-400">Ver Auditoría</span>
           </div>
         </div>
@@ -72,17 +69,17 @@ export default function PermissionInfo({ showDetails = false, className = "" }: 
         {showDetails && (
           <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
             <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Permisos Detallados ({permissions.length})
+              Permisos Detallados ({userPermissions.globalPermissions.length})
             </h4>
             <div className="flex flex-wrap gap-1">
-              {permissions.slice(0, 10).map((permission, index) => (
+              {userPermissions.globalPermissions.slice(0, 10).map((permission, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
                   {permission.replace(':', ': ')}
                 </Badge>
               ))}
-              {permissions.length > 10 && (
+              {userPermissions.globalPermissions.length > 10 && (
                 <Badge variant="outline" className="text-xs">
-                  +{permissions.length - 10} más
+                  +{userPermissions.globalPermissions.length - 10} más
                 </Badge>
               )}
             </div>
@@ -92,10 +89,9 @@ export default function PermissionInfo({ showDetails = false, className = "" }: 
         {/* Información adicional */}
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            <p>ID: {userPermissions.userId}</p>
+            <p>Rol: {userPermissions.role}</p>
             <p>Permisos globales: {userPermissions.globalPermissions.length}</p>
-            <p>Permisos por servidor: {userPermissions.serverPermissions.length}</p>
-            <p>Permisos personalizados: {userPermissions.customPermissions.length}</p>
+            <p>Permisos por servidor: {Object.keys(userPermissions.serverPermissions).length}</p>
           </div>
         </div>
       </div>

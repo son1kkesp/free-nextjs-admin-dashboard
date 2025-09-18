@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { useApi } from "@/hooks/useApi";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { UserRole } from "@prisma/client";
 import Modal from "@/components/ui/modal/Modal";
 import InputField from "@/components/form/input/InputField";
@@ -28,7 +28,7 @@ export default function CreateDemoModal({
   onClose,
   onSuccess
 }: CreateDemoModalProps) {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",

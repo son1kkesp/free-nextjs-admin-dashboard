@@ -5,7 +5,6 @@ import UserSyncWidget from "@/components/jobs/UserSyncWidget";
 import QueueManagerWidget from "@/components/jobs/QueueManagerWidget";
 import PermissionInfo from "@/components/auth/PermissionInfo";
 import PermissionGuard from "@/components/auth/PermissionGuard";
-import SessionDebug from "@/components/debug/SessionDebug";
 
 interface DashboardWidgetProps {
   serversCount: number;
@@ -35,9 +34,6 @@ export default function DashboardWidget({
 
   return (
     <div className="space-y-6">
-      {/* Debug de Sesión */}
-      <SessionDebug />
-      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

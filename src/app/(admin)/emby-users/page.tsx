@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { EmbyServer } from "@prisma/client";
 import PermissionGuard from "@/components/auth/PermissionGuard";
 import CreateEmbyUserModal from "@/components/emby/CreateEmbyUserModal";
@@ -40,7 +40,7 @@ interface EmbyUsersResponse {
 }
 
 export default function EmbyUsersPage() {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const [servers, setServers] = useState<EmbyServer[]>([]);
   const [selectedServerId, setSelectedServerId] = useState<string>("");
   const [embyUsers, setEmbyUsers] = useState<EmbyUser[]>([]);

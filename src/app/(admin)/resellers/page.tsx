@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { User, UserRole } from "@prisma/client";
 import PermissionGuard from "@/components/auth/PermissionGuard";
 import CreateResellerModal from "@/components/modals/CreateResellerModal";
 
 export default function ResellersPage() {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const [resellers, setResellers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

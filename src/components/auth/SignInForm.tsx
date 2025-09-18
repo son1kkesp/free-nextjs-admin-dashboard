@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
 
@@ -10,44 +10,24 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { signIn } = useAuth();
   const router = useRouter();
-
-  console.log('🔍 SignInForm - Component rendered');
-  console.log('🔍 SignInForm - Email state:', email);
-  console.log('🔍 SignInForm - Password state:', password ? '***' : '');
-  console.log('🔍 SignInForm - isLoading:', isLoading);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🔍 SignInForm - handleSubmit called');
-    console.log('🔍 SignInForm - Email:', email);
-    console.log('🔍 SignInForm - Password length:', password.length);
-    
     setIsLoading(true);
     setError("");
 
     try {
-      console.log('🔍 SignInForm - Calling signIn...');
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      const result = await signIn(email, password);
 
-      console.log('🔍 SignInForm - signIn result:', result);
-
-      if (result?.error) {
-        console.log('🔍 SignInForm - Error:', result.error);
-        setError("Credenciales inválidas");
-      } else if (result?.ok) {
-        console.log('🔍 SignInForm - Login successful, redirecting...');
-        // Redirigir directamente sin verificar la sesión
+      if (result.success) {
         router.push("/");
       } else {
-        console.log('🔍 SignInForm - Unexpected result:', result);
+        setError(result.error || "Credenciales inválidas");
       }
     } catch (error) {
-      console.error('🔍 SignInForm - Exception:', error);
+      console.error('Error al iniciar sesión:', error);
       setError("Error al iniciar sesión");
     } finally {
       setIsLoading(false);
@@ -139,7 +119,6 @@ export default function SignInForm() {
               type="submit"
               disabled={isLoading}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => console.log('🔍 SignInForm - Button clicked')}
             >
               {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </button>

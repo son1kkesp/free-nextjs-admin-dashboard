@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { UserRole } from "@prisma/client";
 import PermissionGuard from "@/components/auth/PermissionGuard";
 import CreateDemoModal from "@/components/demos/CreateDemoModal";
@@ -33,7 +33,7 @@ interface Demo {
 }
 
 export default function DemosPage() {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filters, setFilters] = useState({
     search: "",

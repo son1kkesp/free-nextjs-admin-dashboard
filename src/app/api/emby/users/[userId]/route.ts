@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getSessionFromRequest } from "@/lib/auth-simple";
 import { prisma } from "@/lib/prisma";
 import { EmbyService } from "@/lib/emby";
 import { UserRole } from "@prisma/client";
@@ -10,7 +9,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { userId: string } }
 ) {
-  const session = await getServerSession(authOptions);
+    const session = await getSessionFromRequest(request);
 
   if (!session?.user) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -65,7 +64,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { userId: string } }
 ) {
-  const session = await getServerSession(authOptions);
+    const session = await getSessionFromRequest(request);
 
   if (!session?.user) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -148,7 +147,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { userId: string } }
 ) {
-  const session = await getServerSession(authOptions);
+    const session = await getSessionFromRequest(request);
 
   if (!session?.user) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

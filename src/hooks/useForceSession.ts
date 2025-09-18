@@ -1,18 +1,11 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { useEffect } from "react"
+// Este hook ya no es necesario - useAuth maneja la sesión directamente
+// import { useSession } from "next-auth/react"
+// import { useEffect } from "react"
 
 export function useForceSession() {
-  const { data: session, status, update } = useSession()
-
-  useEffect(() => {
-    // Forzar la actualización de la sesión si está cargando
-    if (status === "loading") {
-      console.log('🔍 useForceSession - Forcing session update...')
-      update()
-    }
-  }, [status, update])
-
-  return { session, status, update }
+  // Hook deprecado - usar useAuth en su lugar
+  console.warn('useForceSession está deprecado. Usar useAuth en su lugar.')
+  return { session: null, status: 'unauthenticated', update: () => {} }
 }

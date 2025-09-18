@@ -1,145 +1,109 @@
-"use client"
+"use client";
 
-import { useSession } from "next-auth/react"
-import { useMemo } from "react"
-import { 
-  UserPermissions, 
-  hasPermission, 
-  canPerformAction,
-  getRolePermissions,
-  Resource,
-  Action,
-  AllPermissions
-} from "@/lib/permissions"
+import { useAuth } from "./useAuth";
+import { UserRole } from "@prisma/client";
+import { useMemo } from "react";
 
-/**
- * Hook para manejar permisos en el frontend
- */
+export interface UserPermissions {
+  role: UserRole;
+  globalPermissions: string[];
+  serverPermissions: { [serverId: string]: string[] };
+}
+
 export function usePermissions() {
-  const { data: session, status } = useSession()
+  const { session, loading } = useAuth();
 
-  console.log('🔍 usePermissions - Session status:', status);
-  console.log('🔍 usePermissions - Session data:', session);
-
-  // Construir objeto de permisos del usuario
-  const userPermissions = useMemo((): UserPermissions | null => {
+  const userPermissions = useMemo(() => {
     if (!session?.user) {
-      console.log('🔍 usePermissions - No session or user found');
-      return null
+      return null;
     }
 
-    console.log('🔍 usePermissions - Session user:', session.user);
-    console.log('🔍 usePermissions - Role:', session.user.role);
+    const user = session.user;
 
-    return {
-      userId: session.user.id || '',
-      role: session.user.role || 'BASIC_RESELLER',
-      globalPermissions: getRolePermissions(session.user.role || 'BASIC_RESELLER'),
-      serverPermissions: [], // TODO: Implementar permisos por servidor
-      customPermissions: [] // TODO: Implementar permisos personalizados
+    const permissions: UserPermissions = {
+      role: user.role as UserRole,
+      globalPermissions: [],
+      serverPermissions: {}
+    };
+
+    // Definir permisos globales basados en el rol
+    switch (user.role) {
+      case "SUPER_ADMIN":
+        permissions.globalPermissions = [
+          "users:read", "users:write", "users:delete",
+          "servers:read", "servers:write", "servers:delete",
+          "demos:read", "demos:write", "demos:delete",
+          "settings:read", "settings:write",
+          "analytics:read",
+          "logs:read"
+        ];
+        break;
+      case "TECH_ADMIN":
+        permissions.globalPermissions = [
+          "users:read", "users:write",
+          "servers:read", "servers:write",
+          "demos:read", "demos:write", "demos:delete",
+          "settings:read",
+          "analytics:read",
+          "logs:read"
+        ];
+        break;
+      case "PREMIUM_RESELLER":
+        permissions.globalPermissions = [
+          "users:read", "users:write",
+          "servers:read", "servers:write",
+          "demos:read", "demos:write", "demos:delete",
+          "analytics:read"
+        ];
+        break;
+      case "ADVANCED_RESELLER":
+        permissions.globalPermissions = [
+          "users:read", "users:write",
+          "servers:read", "servers:write",
+          "demos:read", "demos:write", "demos:delete"
+        ];
+        break;
+      case "BASIC_RESELLER":
+        permissions.globalPermissions = [
+          "users:read",
+          "servers:read",
+          "demos:read", "demos:write", "demos:delete"
+        ];
+        break;
     }
-  }, [session])
 
-  /**
-   * Verifica si el usuario tiene un permiso específico
-   */
-  const hasPermissionCheck = (permission: AllPermissions, serverId?: string): boolean => {
-    if (!userPermissions) return false
-    return hasPermission(userPermissions, permission, serverId)
-  }
+    return permissions;
+  }, [session]);
 
-  /**
-   * Verifica si el usuario puede realizar una acción en un recurso
-   */
-  const canPerform = (resource: Resource, action: Action, serverId?: string): boolean => {
-    if (!userPermissions) return false
-    return canPerformAction(userPermissions, resource, action, serverId)
-  }
+  const hasPermission = (permission: string, serverId?: string) => {
+    if (!userPermissions) return false;
+    
+    if (serverId && userPermissions.serverPermissions[serverId]) {
+      return userPermissions.serverPermissions[serverId].includes(permission);
+    }
+    
+    return userPermissions.globalPermissions.includes(permission);
+  };
 
-  /**
-   * Verifica si el usuario es administrador
-   */
-  const isAdmin = (): boolean => {
-    return hasPermissionCheck('admin:all')
-  }
+  const isSuperAdmin = () => {
+    return userPermissions?.role === "SUPER_ADMIN";
+  };
 
-  /**
-   * Verifica si el usuario es super admin
-   */
-  const isSuperAdmin = (): boolean => {
-    return userPermissions?.role === 'SUPER_ADMIN'
-  }
+  const isTechAdmin = () => {
+    return userPermissions?.role === "TECH_ADMIN";
+  };
 
-  /**
-   * Verifica si el usuario es tech admin
-   */
-  const isTechAdmin = (): boolean => {
-    return userPermissions?.role === 'TECH_ADMIN'
-  }
-
-  /**
-   * Verifica si el usuario puede gestionar usuarios
-   */
-  const canManageUsers = (): boolean => {
-    return canPerform('users', 'create') || canPerform('users', 'update') || canPerform('users', 'delete')
-  }
-
-  /**
-   * Verifica si el usuario puede gestionar servidores
-   */
-  const canManageServers = (): boolean => {
-    return canPerform('servers', 'create') || canPerform('servers', 'update') || canPerform('servers', 'delete')
-  }
-
-  /**
-   * Verifica si el usuario puede ejecutar jobs
-   */
-  const canExecuteJobs = (): boolean => {
-    return canPerform('jobs', 'execute')
-  }
-
-  /**
-   * Verifica si el usuario puede ver auditoría
-   */
-  const canViewAudit = (): boolean => {
-    return canPerform('audit', 'read')
-  }
-
-  /**
-   * Obtiene todos los permisos del usuario
-   */
-  const getAllPermissions = (): AllPermissions[] => {
-    if (!userPermissions) return []
-    return userPermissions.globalPermissions
-  }
-
-  /**
-   * Verifica si el usuario tiene al menos uno de los permisos especificados
-   */
-  const hasAnyPermission = (permissions: AllPermissions[]): boolean => {
-    return permissions.some(permission => hasPermissionCheck(permission))
-  }
-
-  /**
-   * Verifica si el usuario tiene todos los permisos especificados
-   */
-  const hasAllPermissions = (permissions: AllPermissions[]): boolean => {
-    return permissions.every(permission => hasPermissionCheck(permission))
-  }
+  const isReseller = () => {
+    return userPermissions?.role && ["PREMIUM_RESELLER", "ADVANCED_RESELLER", "BASIC_RESELLER"].includes(userPermissions.role);
+  };
 
   return {
     userPermissions,
-    hasPermission: hasPermissionCheck,
-    canPerform,
-    isAdmin,
+    hasPermission,
     isSuperAdmin,
     isTechAdmin,
-    canManageUsers,
-    canManageServers,
-    canExecuteJobs,
-    canViewAudit,
-    getAllPermissions,
-    hasAnyPermission,
-    hasAllPermissions
-  }
+    isReseller,
+    loading,
+    authenticated: !!session
+  };
 }

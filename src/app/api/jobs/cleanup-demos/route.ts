@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getSessionFromRequest } from "@/lib/auth-simple"
 import { cleanupExpiredDemos, getDemoStats } from "@/lib/jobs/demo-cleanup"
 
 export async function POST(request: NextRequest) {
   try {
     // Verificar autenticación
-    const session = await getServerSession(authOptions)
+    const session = await getSessionFromRequest(request)
     if (!session) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 })
     }
@@ -48,7 +47,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     // Verificar autenticación
-    const session = await getServerSession(authOptions)
+    const session = await getSessionFromRequest(request)
     if (!session) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 })
     }

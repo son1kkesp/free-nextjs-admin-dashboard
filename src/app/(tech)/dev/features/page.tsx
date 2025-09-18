@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function DevFeaturesPage() {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const [testResults, setTestResults] = useState<string[]>([]);
 
   const runFeatureTest = async (feature: string) => {

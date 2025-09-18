@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getSessionFromRequest } from "@/lib/auth-simple"
 import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
     // Verificar autenticación
-    const session = await getServerSession(authOptions)
+    const session = await getSessionFromRequest(request)
     if (!session) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 })
     }

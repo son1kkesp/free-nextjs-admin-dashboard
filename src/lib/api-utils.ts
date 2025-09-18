@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getSessionFromRequest } from "@/lib/auth-simple";
 import { UserRole } from "@prisma/client";
 
 // Tipos comunes para respuestas de API
@@ -51,7 +50,7 @@ export function createErrorResponse(
 
 // Middleware para autenticación
 export async function requireAuth(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await getSessionFromRequest(request);
   
   if (!session?.user) {
     throw new ApiError(401, "No autorizado");

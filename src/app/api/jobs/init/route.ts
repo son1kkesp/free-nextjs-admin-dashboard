@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server"
+import { getSessionFromRequest } from "@/lib/auth-simple"
 import { initializeQueues } from "@/lib/queue/init"
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     // Verificar autenticación
-    const session = await getServerSession(authOptions)
+    const session = await getSessionFromRequest(request)
     if (!session) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 })
     }

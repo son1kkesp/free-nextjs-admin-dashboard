@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function DevDebugPage() {
-  const { data: session } = useSession();
+  const { session } = useAuth();
   const [debugLogs, setDebugLogs] = useState<string[]>([]);
   const [isMonitoring, setIsMonitoring] = useState(false);
 
