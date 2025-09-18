@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useToastContext } from '@/components/providers/ToastProvider';
-import { Modal, ModalActions } from '@/components/ui/Modal';
+import { Modal, ModalActions } from "../ui/modal";
 
 interface RenewUserModalProps {
   isOpen: boolean;

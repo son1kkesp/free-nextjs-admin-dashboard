@@ -28,11 +28,7 @@ export async function GET(request: NextRequest) {
         }
       },
       include: {
-        embyAccounts: {
-          include: {
-            userServerLink: true
-          }
-        }
+        embyAccounts: true
       },
       orderBy: {
         createdAt: 'desc'
@@ -42,13 +38,12 @@ export async function GET(request: NextRequest) {
     // Formatear datos para el frontend
     const formattedUsers = users.map(user => {
       const embyAccount = user.embyAccounts[0]
-      const userServerLink = embyAccount?.userServerLink
 
       return {
         id: user.id,
         email: user.email,
-        creditType: userServerLink?.creditType || 'ONE_CONNECTION',
-        expirationDate: userServerLink?.expirationDate,
+        creditType: 'ONE_CONNECTION', // TODO: Obtener desde UserServerLink cuando se implemente
+        expirationDate: null, // TODO: Obtener desde UserServerLink cuando se implemente
         isActive: user.isActive,
         createdAt: user.createdAt,
         embyAccount: embyAccount ? {

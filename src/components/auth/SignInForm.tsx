@@ -143,6 +143,15 @@ export default function SignInForm() {
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 <strong>TECH_ADMIN:</strong> tech@emby.com / tech123
               </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <strong>PREMIUM_RESELLER:</strong> premium@emby.com / premium123
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <strong>ADVANCED_RESELLER:</strong> advanced@emby.com / advanced123
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <strong>BASIC_RESELLER:</strong> basic@emby.com / basic123
+              </div>
             </div>
           </div>
         </form>

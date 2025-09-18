@@ -3,7 +3,7 @@ import { useModal } from "@/hooks/useModal";
 import ComponentCard from "../../common/ComponentCard";
 
 import Button from "../../ui/button/Button";
-import { Modal } from "../../ui/Modal";
+import { Modal } from "../../ui/modal";
 
 export default function FullScreenModal() {
   const {
@@ -13,7 +13,6 @@ export default function FullScreenModal() {
   } = useModal();
   const handleSave = () => {
     // Handle save logic here
-    console.log("Saving changes...");
     closeFullscreenModal();
   };
   return (

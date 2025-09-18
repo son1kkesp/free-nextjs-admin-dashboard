@@ -4,12 +4,15 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const servers = await prisma.embyServer.findMany({
-      include: {
-        userServerLinks: {
-          where: {
-            isDemo: false
-          }
-        },
+      select: {
+        id: true,
+        name: true,
+        url: true,
+        maxUsers: true,
+        isActive: true,
+        isTest: true,
+        createdAt: true,
+        updatedAt: true,
         _count: {
           select: {
             userServerLinks: {

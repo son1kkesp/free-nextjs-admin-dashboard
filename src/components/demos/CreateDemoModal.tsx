@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/useToast";
 import { useApi } from "@/hooks/useApi";
 import { useAuth } from "@/hooks/useAuth";
 import { UserRole } from "@prisma/client";
-import Modal from "@/components/ui/modal/Modal";
+import { Modal } from "../ui/modal";
 import InputField from "@/components/form/input/InputField";
 import SelectField from "@/components/form/select/SelectField";
 

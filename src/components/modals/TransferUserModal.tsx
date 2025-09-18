@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useToastContext } from '@/components/providers/ToastProvider';
-import { Modal, UserInfo, ModalActions } from '@/components/ui/Modal';
+import { Modal, UserInfo, ModalActions } from "../ui/modal";
 
 interface TransferUserModalProps {
   isOpen: boolean;

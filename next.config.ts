@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
     // Mejorar la estabilidad del routing
     optimizePackageImports: ['react', 'react-dom'],
     // Optimizaciones de rendimiento
-    optimizeCss: true,
+    // optimizeCss: true, // Temporalmente deshabilitado por error de critters
   },
   // Optimizaciones de rendimiento
   // swcMinify está habilitado por defecto en Next.js 15+
