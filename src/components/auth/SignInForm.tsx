@@ -13,29 +13,50 @@ export default function SignInForm() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  console.log('🔍 SignInForm - Component rendered');
+  console.log('🔍 SignInForm - Email state:', email);
+  console.log('🔍 SignInForm - Password state:', password ? '***' : '');
+  console.log('🔍 SignInForm - isLoading:', isLoading);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔍 SignInForm - handleSubmit called');
+    console.log('🔍 SignInForm - Email:', email);
+    console.log('🔍 SignInForm - Password length:', password.length);
+    
     setIsLoading(true);
     setError("");
 
     try {
+      console.log('🔍 SignInForm - Calling signIn...');
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
+      console.log('🔍 SignInForm - signIn result:', result);
+
       if (result?.error) {
+        console.log('🔍 SignInForm - Error:', result.error);
         setError("Credenciales inválidas");
       } else if (result?.ok) {
+        console.log('🔍 SignInForm - Login successful, getting session...');
         // Obtener la sesión para verificar el rol
         const session = await getSession();
+        console.log('🔍 SignInForm - Session:', session);
         if (session?.user) {
+          console.log('🔍 SignInForm - User found, redirecting...');
           // Redirigir según el rol
           router.push("/");
+        } else {
+          console.log('🔍 SignInForm - No user in session');
         }
+      } else {
+        console.log('🔍 SignInForm - Unexpected result:', result);
       }
     } catch (error) {
+      console.error('🔍 SignInForm - Exception:', error);
       setError("Error al iniciar sesión");
     } finally {
       setIsLoading(false);
@@ -54,7 +75,7 @@ export default function SignInForm() {
           </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
               {error}
@@ -127,6 +148,7 @@ export default function SignInForm() {
               type="submit"
               disabled={isLoading}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => console.log('🔍 SignInForm - Button clicked')}
             >
               {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </Button>
