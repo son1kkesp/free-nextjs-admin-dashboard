@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma), // Comentado temporalmente para debug
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -58,6 +58,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role
         token.isActive = user.isActive
         token.email = user.email
+        console.log('🔍 JWT Callback - Updated token:', token);
       }
       return token
     },
