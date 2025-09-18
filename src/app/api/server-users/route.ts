@@ -30,9 +30,7 @@ export async function GET(request: NextRequest) {
             { expirationDate: null },
             { expirationDate: { gt: now } }
           ];
-          whereClause.embyAccount = {
-            isActive: true
-          };
+          whereClause.isActive = true;
           break;
         case 'expired':
           whereClause.expirationDate = { lt: now };
@@ -45,9 +43,7 @@ export async function GET(request: NextRequest) {
           };
           break;
         case 'inactive':
-          whereClause.embyAccount = {
-            isActive: false
-          };
+          whereClause.isActive = false;
           break;
       }
     }
@@ -61,7 +57,7 @@ export async function GET(request: NextRequest) {
         orderByClause = { createdAt: 'desc' };
         break;
       case 'email':
-        orderByClause = { embyAccount: { embyUserEmail: 'asc' } };
+        orderByClause = { embyUserEmail: 'asc' };
         break;
       default:
         orderByClause = { expirationDate: 'asc' };
@@ -76,7 +72,8 @@ export async function GET(request: NextRequest) {
           }
         }
       },
-      orderBy: orderByClause
+      orderBy: orderByClause,
+      take: 100 // Limitar resultados para mejorar rendimiento
     });
 
     const formattedUsers = users.map(user => {

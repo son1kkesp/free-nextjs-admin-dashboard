@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
     // Mejorar la estabilidad del routing
     optimizePackageImports: ['@prisma/client'],
   },
+  // Optimizaciones de rendimiento
+  swcMinify: true,
+  compress: true,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
