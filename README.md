@@ -1,6 +1,6 @@
-# TailAdmin Next.js - Free Next.js Tailwind Admin Dashboard Template
+# Emby Admin Dashboard - Next.js Tailwind Admin Dashboard
 
-TailAdmin is a free and open-source admin dashboard template built on **Next.js and Tailwind CSS** providing developers with everything they need to create a feature-rich and data-driven: back-end, dashboard, or admin panel solution for any sort of web project.
+Emby Admin Dashboard is a comprehensive admin dashboard built on **Next.js and Tailwind CSS** for managing Emby media servers, users, and reseller accounts. This project provides a complete solution for Emby server administration with role-based access control and automated user management.
 
 ![TailAdmin - Next.js Dashboard Preview](./banner.png)
 
@@ -44,7 +44,7 @@ To get started with TailAdmin, ensure you have the following prerequisites insta
 Clone the repository using the following command:
 
 ```bash
-git clone https://github.com/TailAdmin/free-nextjs-admin-dashboard.git
+git clone https://github.com/son1kkesp/free-nextjs-admin-dashboard.git
 ```
 
 > Windows Users: place the repository near the root of your drive if you face issues while cloning.
