@@ -14,10 +14,9 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   experimental: {
     // Mejorar la estabilidad del routing
-    optimizePackageImports: ['@prisma/client', 'react', 'react-dom'],
+    optimizePackageImports: ['react', 'react-dom'],
     // Optimizaciones de rendimiento
     optimizeCss: true,
-    serverComponentsExternalPackages: ['@prisma/client'],
   },
   // Optimizaciones de rendimiento
   swcMinify: true,
