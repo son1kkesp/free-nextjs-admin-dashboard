@@ -22,6 +22,9 @@ export function usePermissions() {
   const userPermissions = useMemo((): UserPermissions | null => {
     if (!session?.user) return null
 
+    console.log('🔍 usePermissions - Session user:', session.user);
+    console.log('🔍 usePermissions - Role:', session.user.role);
+
     return {
       userId: session.user.id || '',
       role: session.user.role || 'BASIC_RESELLER',

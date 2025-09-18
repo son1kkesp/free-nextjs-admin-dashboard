@@ -13,7 +13,11 @@ interface DynamicLayoutProps {
 
 export default function DynamicLayout({ children }: DynamicLayoutProps) {
   const pathname = usePathname()
-  const { isSuperAdmin, isTechAdmin } = usePermissions()
+  const { isSuperAdmin, isTechAdmin, userPermissions } = usePermissions()
+
+  console.log('🔍 DynamicLayout - userPermissions:', userPermissions);
+  console.log('🔍 DynamicLayout - isSuperAdmin:', isSuperAdmin());
+  console.log('🔍 DynamicLayout - isTechAdmin:', isTechAdmin());
 
   // Función para verificar si una ruta es válida
   const isValidRoute = (path: string) => {
