@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma), // Comentado temporalmente para debug
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -51,17 +51,25 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      console.log('🔍 JWT Callback - User:', user);
+      console.log('🔍 JWT Callback - Token:', token);
+      
       if (user) {
         token.role = user.role
         token.isActive = user.isActive
+        token.email = user.email
       }
       return token
     },
     async session({ session, token }) {
+      console.log('🔍 Session Callback - Token:', token);
+      console.log('🔍 Session Callback - Session:', session);
+      
       if (token) {
         session.user.id = token.sub!
         session.user.role = token.role as string
         session.user.isActive = token.isActive as boolean
+        session.user.email = token.email as string
       }
       return session
     }
