@@ -4,8 +4,14 @@ import { useSession } from "next-auth/react";
 import { usePermissions } from "@/hooks/usePermissions";
 
 export default function SessionDebug() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const { userPermissions, isSuperAdmin, isTechAdmin } = usePermissions();
+
+  // Forzar la actualización de la sesión al cargar el componente
+  React.useEffect(() => {
+    console.log('🔍 SessionDebug - Forcing session update...');
+    update();
+  }, [update]);
 
   if (status === "loading") {
     return (
