@@ -1,3 +1,15 @@
 {
-  "agentCanUpdateSnapshot": true
+  "agentCanUpdateSnapshot": true,
+  "install": "npm install",
+  "terminals": [
+    {
+      "name": "Next.js Dev Server",
+      "command": "npm run dev"
+    },
+    {
+      "name": "Prisma Studio",
+      "command": "npx prisma studio"
+    }
+  ],
+  "snapshot": "POPULATED_FROM_SETTINGS"
 }
