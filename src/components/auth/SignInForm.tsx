@@ -40,17 +40,9 @@ export default function SignInForm() {
         console.log('🔍 SignInForm - Error:', result.error);
         setError("Credenciales inválidas");
       } else if (result?.ok) {
-        console.log('🔍 SignInForm - Login successful, getting session...');
-        // Obtener la sesión para verificar el rol
-        const session = await getSession();
-        console.log('🔍 SignInForm - Session:', session);
-        if (session?.user) {
-          console.log('🔍 SignInForm - User found, redirecting...');
-          // Redirigir según el rol
-          router.push("/");
-        } else {
-          console.log('🔍 SignInForm - No user in session');
-        }
+        console.log('🔍 SignInForm - Login successful, redirecting...');
+        // Redirigir directamente sin verificar la sesión
+        router.push("/");
       } else {
         console.log('🔍 SignInForm - Unexpected result:', result);
       }
